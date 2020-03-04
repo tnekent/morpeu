@@ -35,3 +35,39 @@ interface ModRules {
 }
 
 type Field = ConstField | FormatField;
+
+abstract class AbstractParser<T> implements Parser<T> {
+    public input: string;
+    public index: number;
+
+    public constructor(input: string, index: number) {
+        this.input = input;
+        this.index = index;
+    }
+
+    protected get curChar(): string {
+        return this.input[this.index];
+    }
+
+    protected matchAndUpdate(regex: RegExp): string | undefined {
+        const match = regex.exec(this.input.slice(this.index));
+        let result: string | undefined;
+        if (match !== null) {
+            [ result ] = match;
+            this.index += result.length;
+        }
+
+        return result;
+    }
+
+    protected parseWith<P>(pctor: ParserConstructor<P>): P {
+        const pclass = new pctor(this.input, this.index),
+            parseResult: P = pclass.parse();
+
+        this.index = pclass.index;
+
+        return parseResult;
+    }
+
+    abstract parse(): T;
+}
