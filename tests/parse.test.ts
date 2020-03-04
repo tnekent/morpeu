@@ -20,4 +20,19 @@ describe("Const field", () => {
         });
         expect(iter.next().done).toBeTruthy();
     });
+
+    test("parses const field of literal braces", () => {
+        const iter = new Parser("}}{{").parse();
+        let { value: field } = iter.next();
+        expect(field).toMatchObject({
+            type: "const",
+            value: "}"
+        });
+        field = iter.next().value;
+        expect(field).toMatchObject({
+            type: "const",
+            value: "{"
+        });
+        expect(iter.next().done).toBeTruthy();
+    });
 });

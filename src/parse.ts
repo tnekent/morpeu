@@ -96,6 +96,12 @@ export default class MainParser extends AbstractParser<ParseIter> {
     }
 
     public *parse(): ParseIter {
-        yield this.parseWith(ConstFieldParser);
+        while (typeof this.curChar !== "undefined")
+            if (/[{}]/.test(this.curChar)) {
+                this.index++;
+                yield this.parseWith(ConstFieldBraceParser);
+            }
+            else yield this.parseWith(ConstFieldParser);
+
     }
 }
