@@ -96,6 +96,6 @@ export default class MainParser extends AbstractParser<ParseIter> {
     }
 
     public *parse(): ParseIter {
-        yield { type: "const", value: "" };
+        yield this.parseWith(ConstFieldParser);
     }
 }
