@@ -35,6 +35,7 @@ interface ModRules {
 }
 
 type Field = ConstField | FormatField;
+type ParseIter = Generator<Field>;
 
 abstract class AbstractParser<T> implements Parser<T> {
     public input: string;
@@ -70,4 +71,31 @@ abstract class AbstractParser<T> implements Parser<T> {
     }
 
     abstract parse(): T;
+}
+
+class ConstFieldParser extends AbstractParser<ConstField> {
+    public parse(): ConstField {
+        const chars = this.matchAndUpdate(/^[^{}]+/) as string;
+
+        return { type: "const", value: chars };
+    }
+}
+
+class ConstFieldBraceParser extends AbstractParser<ConstField> {
+    public parse(): ConstField {
+        const brace = this.curChar;
+        this.index++;
+
+        return { type: "const", value: brace };
+    }
+}
+
+export default class MainParser extends AbstractParser<ParseIter> {
+    public constructor(input: string) {
+        super(input, 0);
+    }
+
+    public *parse(): ParseIter {
+        yield { type: "const", value: "" };
+    }
 }
