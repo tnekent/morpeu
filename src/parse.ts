@@ -18,24 +18,24 @@ interface FormatField {
     value: FormatRules;
 }
 
-interface FormatRules {
+export interface FormatRules {
     argrules: ArgRules;
     modrules: ModRules;
 }
 
-interface ArgRules {
+export interface ArgRules {
     index: number;
     props: string[];
 }
 
-interface ModRules {
+export interface ModRules {
     padding: number;
     precision: number;
     mod: string;
 }
 
-type Field = ConstField | FormatField;
-type ParseIter = Generator<Field>;
+export type Field = FormatField | ConstField;
+export type ParseIter = Generator<Field>;
 
 abstract class AbstractParser<T> implements Parser<T> {
     public input: string;
