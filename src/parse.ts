@@ -90,6 +90,128 @@ class ConstFieldBraceParser extends AbstractParser<ConstField> {
     }
 }
 
+class ArgRulesParser extends AbstractParser<ArgRules> {
+    public parse(): ArgRules {
+        const index = this.parseIndex(),
+            props = this.parseProps();
+
+        return { index, props };
+    }
+
+    private parseIndex(): number {
+        const index = this.matchAndUpdate(/^\d+/);
+
+        return typeof index !== "undefined" ? parseInt(index) : -1;
+    }
+
+    private parseProps(): string[] {
+        const props: string[] = [];
+        let running = true;
+
+        while (running)
+            switch (this.curChar) {
+                case ".":
+                    props.push(this.parseDotProp());
+                    break;
+                case "[":
+                    props.push(this.parseBracketProp());
+                    break;
+                default:
+                    running = false;
+            }
+
+        return props;
+    }
+
+    private parseDotProp(): string {
+        this.index++;
+        const prop = this.matchAndUpdate(/^[A-Za-z$_][A-Za-z0-9$_]*/);
+        if (typeof prop === "undefined")
+            throw new Error("Expected a valid identifier after dot");
+
+        return prop;
+    }
+
+    private parseBracketProp(): string {
+        this.index++;
+        const prop = this.matchAndUpdate(/^[^\]]+/);
+        if (typeof prop === "undefined")
+            throw new Error("Expected a string inside brackets");
+        else if (this.curChar !== "]")
+            throw new Error("A bracket is not properly closed");
+        this.index++;
+
+        return prop;
+    }
+}
+
+class ModRulesParser extends AbstractParser<ModRules> {
+    public parse(): ModRules {
+        const padding = this.parsePadding(),
+            precision = this.parsePrecision(),
+            mod = this.parseMod();
+
+        return { padding, precision, mod };
+    }
+
+    private parsePadding(): number {
+        const padding = this.matchAndUpdate(/^\d+/);
+
+        return typeof padding !== "undefined" ? parseInt(padding) : 0;
+    }
+
+    private parsePrecision(): number {
+        let precision = -1;
+        if (this.curChar === ".") {
+            this.index++;
+            const precmatch = this.matchAndUpdate(/^\d+/);
+            if (typeof precmatch === "undefined")
+                throw new Error("Expected a number after the dot");
+            precision = parseInt(precmatch);
+        }
+
+        return precision;
+    }
+
+    private parseMod(): string {
+        const mod = this.matchAndUpdate(/^[A-Za-z]/);
+
+        return typeof mod !== "undefined" ? mod : "";
+    }
+}
+
+class FormatFieldParser extends AbstractParser<FormatField> {
+    public parse(): FormatField {
+        const argrules = this.parseWith(ArgRulesParser);
+        this.skipDelimiter();
+        const modrules = this.parseWith(ModRulesParser);
+        this.checkEndBrace();
+
+        return {
+            type: "format",
+            value: { argrules, modrules }
+        };
+    }
+
+    private skipDelimiter(): void {
+        switch (this.curChar) {
+            case "|":
+                this.index++;
+                break;
+            case "}":
+                break;
+            default:
+                throw new Error("Unexpected character");
+        }
+    }
+
+    private checkEndBrace(): void {
+        if (this.curChar !== "}")
+            throw new Error("Expected a closing brace");
+        this.index++;
+    }
+}
+
 export default class MainParser extends AbstractParser<ParseIter> {
     public constructor(input: string) {
         super(input, 0);
@@ -97,11 +219,18 @@ export default class MainParser extends AbstractParser<ParseIter> {
 
     public *parse(): ParseIter {
         while (typeof this.curChar !== "undefined")
-            if (/[{}]/.test(this.curChar)) {
-                this.index++;
-                yield this.parseWith(ConstFieldBraceParser);
-            }
+            if (/[{}]/.test(this.curChar))
+                yield this.understandBrace();
             else yield this.parseWith(ConstFieldParser);
 
+    }
+
+    private understandBrace(): Field {
+        const brace = this.curChar;
+        this.index++;
+        if (this.curChar === brace)
+            return this.parseWith(ConstFieldBraceParser);
+
+        return this.parseWith(FormatFieldParser);
     }
 }
