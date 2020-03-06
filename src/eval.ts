@@ -4,6 +4,17 @@ interface Evaluator<T> {
     eval(): T;
 }
 
+class ConstFieldEvaluator implements Evaluator<string> {
+    public value: string;
+    public constructor(value: string) {
+        this.value = value;
+    }
+
+    public eval(): string {
+        return this.value;
+    }
+}
+
 export default class MainEvaluator implements Evaluator<string> {
     private iter: ParseIter;
     private arglist: any[];
@@ -14,6 +25,13 @@ export default class MainEvaluator implements Evaluator<string> {
     }
 
     public eval(): string {
-        return "";
+        let result = "";
+        for (const field of this.iter)
+            switch (field.type) {
+                case "const":
+                    result += new ConstFieldEvaluator(field.value).eval();
+            }
+
+        return result;
     }
 }
