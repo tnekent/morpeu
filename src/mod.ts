@@ -5,7 +5,8 @@ export interface Modifier {
 }
 
 const isString = (arg: any): boolean => typeof arg === "string",
-    { isInteger } = Number;
+    { isInteger } = Number,
+    isFloat = (arg: any): boolean => typeof arg === "number" && !Number.isInteger(arg);
 
 abstract class AbstractModifier implements Modifier {
     protected modrules: ModRules;
@@ -55,5 +56,19 @@ class ModI extends AbstractModifier {
     public applyPrecision(): void {
         if (this.modrules.precision !== -1)
             throw new Error("Mod i does not support precision");
+    }
+}
+
+class ModF extends AbstractModifier {
+    public checkType(of: any): void {
+        if (isFloat(of) === false)
+            throw new Error("Mod f only supports numbers as float type");
+    }
+
+    public applyPrecision(): void {
+        const precision = this.modrules.precision !== -1
+            ? this.modrules.precision : 6;
+
+        this.io = (this.io as number).toFixed(precision);
     }
 }
