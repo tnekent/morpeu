@@ -4,7 +4,8 @@ export interface Modifier {
     morph(): string;
 }
 
-const isString = (arg: any): boolean => typeof arg === "string";
+const isString = (arg: any): boolean => typeof arg === "string",
+    { isInteger } = Number;
 
 abstract class AbstractModifier implements Modifier {
     protected modrules: ModRules;
@@ -42,5 +43,17 @@ class ModS extends AbstractModifier {
     public applyPrecision(): void {
         if (this.modrules.precision !== -1)
             this.io = (this.io as string).slice(0, this.modrules.precision);
+    }
+}
+
+class ModI extends AbstractModifier {
+    public checkType(of: any): void {
+        if (isInteger(of) === false)
+            throw new Error("Mod i only supports numbers as integer type");
+    }
+
+    public applyPrecision(): void {
+        if (this.modrules.precision !== -1)
+            throw new Error("Mod i does not support precision");
     }
 }
