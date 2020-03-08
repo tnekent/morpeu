@@ -72,3 +72,24 @@ class ModF extends AbstractModifier {
         this.io = (this.io as number).toFixed(precision);
     }
 }
+
+export default class ModifierFactory {
+    public static getModifier(modrules: ModRules, arg: any): Modifier {
+        switch (modrules.mod) {
+            case "s": return new ModS(modrules, arg);
+            case "i": return new ModI(modrules, arg);
+            case "f": return new ModF(modrules, arg);
+            case "": return this.getDefaultModifier(modrules, arg);
+            default: throw new Error(`Mod ${modrules.mod} is not implemented`);
+        }
+    }
+
+    private static getDefaultModifier(modrules: ModRules, arg: any): Modifier {
+        switch (true) {
+            case isString(arg): return new ModS(modrules, arg);
+            case isInteger(arg): return new ModI(modrules, arg);
+            case isFloat(arg): return new ModF(modrules, arg);
+            default: throw new Error(`Unknown type ${arg}. You should report this`);
+        }
+    }
+}
