@@ -24,6 +24,7 @@ describe("Format fields", () => {
         ${"{|f}"}                |${[1.5]}                                        |${"1.500000"}
         ${"{2|f} {1|s} {0|i}"}   |${[4, "Hello", 3.14159]}                        |${"3.141590 Hello 4"}
         ${"{.a[b].c} {.x[y]}"}   |${[{ a: { b: { c: "d" } } }, { x: { y: "z" } }]} |${"d z"}
+        ${"user is {|j}"}      |${[{ user: "foo", id: 375 }]}                      |${`user is ${JSON.stringify({ user: "foo", id: 375 })}`}
         `("evaluates '$input' into '$output'", ({ input, arglist, output }) => {
     const iter = new Parser(input).parse();
 
