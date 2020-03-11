@@ -8,7 +8,7 @@
         "test:watch": "npm test -- --watch",
         "build": "tsc -p ./tsconfig.json",
         "build:watch": "npm run build -- --watch",
-        "lint": "eslint .",
+        "lint": "eslint src/*.ts tests/*.ts",
         "clean": "rimraf dist",
         "prepare": "npm run clean && npm run build"
     },
