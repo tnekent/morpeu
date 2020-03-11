@@ -30,6 +30,7 @@ The delimiter pipe ("|") is similar to to the colon of Python's.
 | `s` | Modifier for strings. A specified precision n slices the string to n characters. |
 | `i` | Modifier for integers. Does not support precision. |
 | `f` | Modifier for floats. Precision handles the amount of digits after the dot, putting 0 when necessary. Default precision is 6. |
+| `j` | Modifier that transforms any JavaScript value to JSON. Does not support precision. |
 
 ## Contributing
 Morpeu is still in its early stages. It would be a lot of help to mention bugs and suggest features to <https://github.com/tnekent/morpeu>.
