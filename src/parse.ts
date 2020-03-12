@@ -50,9 +50,9 @@ abstract class AbstractParser<T> implements Parser<T> {
         return this.input[this.index];
     }
 
-    protected matchAndUpdate(regex: RegExp): string | undefined {
+    protected matchAndUpdate(regex: RegExp): string {
         const match = regex.exec(this.input.slice(this.index));
-        let result: string | undefined;
+        let result: string;
         if (match !== null) {
             [ result ] = match;
             this.index += result.length;
@@ -101,7 +101,7 @@ class ArgRulesParser extends AbstractParser<ArgRules> {
     private parseIndex(): number {
         const index = this.matchAndUpdate(/^\d+/);
 
-        return typeof index !== "undefined" ? parseInt(index) : -1;
+        return typeof index !== "undefined" ? parseInt(index) : undefined;
     }
 
     private parseProps(): string[] {
@@ -157,11 +157,11 @@ class ModRulesParser extends AbstractParser<ModRules> {
     private parsePadding(): number {
         const padding = this.matchAndUpdate(/^\d+/);
 
-        return typeof padding !== "undefined" ? parseInt(padding) : 0;
+        return typeof padding !== "undefined" ? parseInt(padding) : undefined;
     }
 
     private parsePrecision(): number {
-        let precision = -1;
+        let precision;
         if (this.curChar === ".") {
             this.index++;
             const precmatch = this.matchAndUpdate(/^\d+/);
@@ -176,7 +176,7 @@ class ModRulesParser extends AbstractParser<ModRules> {
     private parseMod(): string {
         const mod = this.matchAndUpdate(/^[A-Za-z]/);
 
-        return typeof mod !== "undefined" ? mod : "";
+        return typeof mod !== "undefined" ? mod : undefined;
     }
 }
 

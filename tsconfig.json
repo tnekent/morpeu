@@ -9,6 +9,7 @@
 	"noFallthroughCasesInSwitch": false,
 	"declaration": true,
 	"noImplicitReturns": true,
+	"strictNullChecks": false
 	// "noUnusedLocals": true,
 	// "noImplicitParameters": true
     },

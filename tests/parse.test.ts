@@ -70,7 +70,7 @@ describe("Format type field", () => {
             const iter = new Parser("{.a.b|}").parse(),
                 { index } = iter.next().value.value.argrules;
 
-            expect(index).toBe(-1);
+            expect(index).toBeUndefined();
         });
 
         test("parses props", () => {
@@ -151,12 +151,12 @@ test("parses multiple fields", () => {
     expect(f2.type).toBe("format");
     expect(f2.value).toMatchObject({
         argrules: {
-            index: -1,
+            index: undefined,
             props: ["foo"]
         },
         modrules: {
-            padding: 0,
-            precision: -1,
+            padding: undefined,
+            precision: undefined,
             mod: "s"
         }
     });
@@ -177,7 +177,7 @@ test("parses multiple fields", () => {
         modrules: {
             padding: 2,
             precision: 0,
-            mod: ""
+            mod: undefined
         }
     });
     expect(iter.next().done).toBeTruthy();

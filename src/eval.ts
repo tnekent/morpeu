@@ -28,8 +28,8 @@ class FormatFieldEvaluator implements Evaluator<string> {
     }
 
     private getArg(): any {
-        const index = this.argrules.index !== -1 ? this.argrules.index : FormatFieldEvaluator.autoIndexAt++,
-            { props } = this.argrules;
+        const { index = FormatFieldEvaluator.autoIndexAt++,
+            props } = this.argrules;
 
         if (index > this.arglist.length - 1)
             throw new Error(`Index ${index} out of bounds from argument list`);

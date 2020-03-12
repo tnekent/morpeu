@@ -23,7 +23,7 @@ abstract class AbstractModifier implements Modifier {
     }
 
     public applyPadding(): void {
-        if (this.modrules.padding !== 0)
+        if (typeof this.modrules.padding !== "undefined")
             this.io = `${" ".repeat(this.modrules.padding)}${this.io}`;
     }
 
@@ -60,22 +60,21 @@ abstract class FloatModifier extends AbstractModifier {
 
 class ModS extends StringModifier {
     public applyPrecision(): void {
-        if (this.modrules.precision !== -1)
+        if (typeof this.modrules.precision !== "undefined")
             this.io = (this.io as string).slice(0, this.modrules.precision);
     }
 }
 
 class ModI extends IntegerModifier {
     public applyPrecision(): void {
-        if (this.modrules.precision !== -1)
+        if (typeof this.modrules.precision !== "undefined")
             throw new Error("Mod i does not support precision");
     }
 }
 
 class ModF extends FloatModifier {
     public applyPrecision(): void {
-        const precision = this.modrules.precision !== -1
-            ? this.modrules.precision : 6;
+        const { precision = 6 } = this.modrules;
 
         this.io = (this.io as number).toFixed(precision);
     }
@@ -89,7 +88,7 @@ class ModJ extends AbstractModifier {
     }
 
     public applyPrecision(): void {
-        if (this.modrules.precision !== -1)
+        if (typeof this.modrules.precision !== "undefined")
             throw new Error("Mod j does not support precision");
     }
 
