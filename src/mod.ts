@@ -4,6 +4,11 @@ export interface Modifier {
     morph(): string;
 }
 
+interface StaticModifier {
+    new (modrules: ModRules, arg: any): Modifier;
+    checkType(mod: string): void;
+}
+
 const isString = (arg: any): boolean => typeof arg === "string",
     { isInteger } = Number,
     isFloat = (arg: any): boolean => typeof arg === "number" && !Number.isInteger(arg);
@@ -14,11 +19,8 @@ abstract class AbstractModifier implements Modifier {
 
     public constructor(modrules: ModRules, arg: any) {
         this.modrules = modrules;
-        this.checkType(arg);
         this.io = arg;
     }
-
-    abstract checkType(of: any): void;
 
     public applyPadding(): void {
         if (this.modrules.padding !== 0)
@@ -35,36 +37,42 @@ abstract class AbstractModifier implements Modifier {
     }
 }
 
-class ModS extends AbstractModifier {
-    public checkType(of: any): void {
-        if (isString(of) === false)
-            throw new Error("Mod s only supports string type");
+abstract class StringModifier extends AbstractModifier {
+    public static checkType(mod: string): void {
+        if (!isString(mod))
+            throw new Error(`Mod ${mod} only supports string types`);
     }
+}
 
+abstract class IntegerModifier extends AbstractModifier {
+    public static checkType(mod: string): void {
+        if (!isString(mod))
+            throw new Error(`Mod ${mod} only supports integer types`);
+    }
+}
+
+abstract class FloatModifier extends AbstractModifier {
+    public static checkType(mod: string): void {
+        if (!isString(mod))
+            throw new Error(`Mod ${mod} only supports float types`);
+    }
+}
+
+class ModS extends StringModifier {
     public applyPrecision(): void {
         if (this.modrules.precision !== -1)
             this.io = (this.io as string).slice(0, this.modrules.precision);
     }
 }
 
-class ModI extends AbstractModifier {
-    public checkType(of: any): void {
-        if (isInteger(of) === false)
-            throw new Error("Mod i only supports numbers as integer type");
-    }
-
+class ModI extends IntegerModifier {
     public applyPrecision(): void {
         if (this.modrules.precision !== -1)
             throw new Error("Mod i does not support precision");
     }
 }
 
-class ModF extends AbstractModifier {
-    public checkType(of: any): void {
-        if (isFloat(of) === false)
-            throw new Error("Mod f only supports numbers as float type");
-    }
-
+class ModF extends FloatModifier {
     public applyPrecision(): void {
         const precision = this.modrules.precision !== -1
             ? this.modrules.precision : 6;
@@ -74,11 +82,12 @@ class ModF extends AbstractModifier {
 }
 
 class ModJ extends AbstractModifier {
-    public checkType(): void {
-        // Since any JavaScript vue is serializable to JSON,
+    public static checkType(): void {
+        // Since any JavaScript value is serializable to JSON,
         // checking always passes.
         return;
     }
+
     public applyPrecision(): void {
         if (this.modrules.precision !== -1)
             throw new Error("Mod j does not support precision");
@@ -97,22 +106,36 @@ class ModJ extends AbstractModifier {
 
 export default class ModifierFactory {
     public static getModifier(modrules: ModRules, arg: any): Modifier {
+        let modclass: StaticModifier;
         switch (modrules.mod) {
-            case "s": return new ModS(modrules, arg);
-            case "i": return new ModI(modrules, arg);
-            case "f": return new ModF(modrules, arg);
-            case "j": return new ModJ(modrules, arg);
-            case "": return this.getDefaultModifier(modrules, arg);
+            case "s":
+                modclass = ModS;
+                break;
+            case "i":
+                modclass = ModI;
+                break;
+            case "f":
+                modclass = ModF;
+                break;
+            case "j":
+                modclass = ModJ;
+                break;
+            case "":
+                modclass = this.getDefaultModifier(arg);
+                break;
             default: throw new Error(`Mod ${modrules.mod} is not implemented`);
         }
+        modclass.checkType(modrules.mod);
+
+        return new modclass(modrules, arg);
     }
 
-    private static getDefaultModifier(modrules: ModRules, arg: any): Modifier {
+    private static getDefaultModifier(arg: any): StaticModifier {
         switch (true) {
-            case isString(arg): return new ModS(modrules, arg);
-            case isInteger(arg): return new ModI(modrules, arg);
-            case isFloat(arg): return new ModF(modrules, arg);
-            default: return new ModJ(modrules, arg);
+            case isString(arg): return ModS;
+            case isInteger(arg): return ModI;
+            case isFloat(arg): return ModF;
+            default: return ModJ;
         }
     }
 }
