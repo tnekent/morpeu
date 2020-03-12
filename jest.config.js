@@ -3,5 +3,10 @@ module.exports = {
     testEnvironment: "node",
     cacheDirectory: "../.cache/jest",
     roots: ["src/", "tests/"],
-    testMatch: ["**/*.test.ts"]
+    testMatch: ["**/*.test.ts"],
+    "globals": {
+        "ts-jest": {
+            "packageJson": "./package.json"
+        }
+    }
 };
