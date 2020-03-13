@@ -8,6 +8,11 @@ describe("Mod s", () => {
 
     test("evaluates padding", () => {
         const result = morph("{|5s}", "Padded");
+        expect(result).toBe("Padded     ");
+    });
+
+    test("evaluates padding with align as >", () => {
+        const result = morph("{|>5s}", "Padded");
         expect(result).toBe("     Padded");
     });
 
@@ -37,6 +42,11 @@ describe("Mod i", () => {
         expect(result).toBe("    4");
     });
 
+    test("evaluates padding with align as ^", () => {
+        const result = morph("{|^4i}", 4);
+        expect(result).toBe("  4  ");
+    });
+
     test("errors on specified precision", () => {
         expect(() => morph("{|.1i}", 123456)).toThrow();
     });
@@ -60,6 +70,11 @@ describe("Mod f", () => {
     test("evaluates padding", () => {
         const result = morph("{|3f}", 3.765);
         expect(result).toBe("   3.765000");
+    });
+
+    test("evaluates padding with align as <", () => {
+        const result = morph("{|<2f}", 3.765);
+        expect(result).toBe("3.765000  ");
     });
 
     test("applies precision", () => {
@@ -87,7 +102,14 @@ describe("Mod j", () => {
         const obj = { yes: "no" },
             result = morph("{|1j}", obj);
 
-        expect(result).toBe(` ${JSON.stringify(obj)}`);
+        expect(result).toBe(`${JSON.stringify(obj)} `);
+    });
+
+    test("evaluates padding with align as ^", () => {
+        const obj = { yes: "no" },
+            result = morph("{|^3j}", obj);
+
+        expect(result).toBe(`  ${JSON.stringify(obj)} `);
     });
 
     test("evaluates an object", () => {

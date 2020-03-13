@@ -23,8 +23,26 @@ abstract class AbstractModifier implements Modifier {
     }
 
     public applyPadding(): void {
-        if (typeof this.modrules.padding !== "undefined")
-            this.io = `${" ".repeat(this.modrules.padding)}${this.io}`;
+        if (this.modrules.padding !== 0) {
+            const { padding, align = "<" } = this.modrules;
+
+            switch (align) {
+                case "<":
+                    this.io = `${this.io}${" ".repeat(padding)}`;
+                    break;
+
+                case ">":
+                    this.io = `${" ".repeat(padding)}${this.io}`;
+                    break;
+
+                case "^": {
+                    const left = Math.ceil(padding / 2), right = padding - left;
+                    this.io = `${" ".repeat(left)}${this.io}${" ".repeat(right)}`;
+                }
+                    break;
+
+            }
+        }
     }
 
     abstract applyPrecision(): void;
@@ -49,12 +67,26 @@ abstract class IntegerModifier extends AbstractModifier {
         if (!isInteger(arg))
             throw new Error(`Mod ${mod} only supports integer types`);
     }
+
+    public applyPadding(): void {
+        // Default align symbol for numbers is ">"
+        if (typeof this.modrules.align === "undefined")
+            this.modrules.align = ">";
+        super.applyPadding();
+    }
 }
 
 abstract class FloatModifier extends AbstractModifier {
     public static checkType(arg: any, mod: string): void {
         if (!isFloat(arg))
             throw new Error(`Mod ${mod} only supports float types`);
+    }
+
+    public applyPadding(): void {
+        // Default align symbol for numbers is ">"
+        if (typeof this.modrules.align === "undefined")
+            this.modrules.align = ">";
+        super.applyPadding();
     }
 }
 

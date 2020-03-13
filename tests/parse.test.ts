@@ -118,6 +118,24 @@ describe("Format type field", () => {
             expect(precision).toBe(3);
         });
 
+        test("parses align", () => {
+            let iter = new Parser("{|>}").parse(),
+                { align } = iter.next().value.value.modrules;
+
+            expect(align).toBe(">");
+
+            iter = new Parser("{|^}").parse();
+            align = iter.next().value.value.modrules.align;
+
+            expect(align).toBe("^");
+
+            iter = new Parser("{|<}").parse();
+            align = iter.next().value.value.modrules.align;
+
+            expect(align).toBe("<");
+        });
+
+
         test("parses mod", () => {
             const iter = new Parser("{|f}").parse(),
                 { mod } = iter.next().value.value.modrules;
@@ -139,7 +157,7 @@ describe("Format type field", () => {
 });
 
 test("parses multiple fields", () => {
-    const iter = new Parser("A {.foo|s} is {0|2.0}").parse(),
+    const iter = new Parser("A {.foo|s} is {0|<2.0}").parse(),
         f1 = iter.next().value;
 
     expect(f1).toMatchObject({
@@ -155,6 +173,7 @@ test("parses multiple fields", () => {
             props: ["foo"]
         },
         modrules: {
+            align: undefined,
             padding: undefined,
             precision: undefined,
             mod: "s"
@@ -175,6 +194,7 @@ test("parses multiple fields", () => {
             props: []
         },
         modrules: {
+            align: "<",
             padding: 2,
             precision: 0,
             mod: undefined

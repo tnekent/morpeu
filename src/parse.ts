@@ -29,10 +29,13 @@ export interface ArgRules {
 }
 
 export interface ModRules {
+    align: ModAlignSymbol;
     padding: number;
     precision: number;
     mod: string;
 }
+
+type ModAlignSymbol = "<" | ">" | "^"
 
 export type Field = FormatField | ConstField;
 export type ParseIter = Generator<Field>;
@@ -147,11 +150,16 @@ class ArgRulesParser extends AbstractParser<ArgRules> {
 
 class ModRulesParser extends AbstractParser<ModRules> {
     public parse(): ModRules {
-        const padding = this.parsePadding(),
+        const align = this.parseAlign(),
+            padding = this.parsePadding(),
             precision = this.parsePrecision(),
             mod = this.parseMod();
 
-        return { padding, precision, mod };
+        return { padding, precision, mod, align };
+    }
+
+    private parseAlign(): ModAlignSymbol {
+        return this.matchAndUpdate(/^[<>^]/) as ModAlignSymbol;
     }
 
     private parsePadding(): number {
