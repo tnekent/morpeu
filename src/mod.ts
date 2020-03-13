@@ -6,7 +6,7 @@ export interface Modifier {
 
 interface StaticModifier {
     new (modrules: ModRules, arg: any): Modifier;
-    checkType(mod: string): void;
+    checkType(arg: any, mod: string): void;
 }
 
 const isString = (arg: any): boolean => typeof arg === "string",
@@ -38,22 +38,22 @@ abstract class AbstractModifier implements Modifier {
 }
 
 abstract class StringModifier extends AbstractModifier {
-    public static checkType(mod: string): void {
-        if (!isString(mod))
+    public static checkType(arg: any, mod: string): void {
+        if (!isString(arg))
             throw new Error(`Mod ${mod} only supports string types`);
     }
 }
 
 abstract class IntegerModifier extends AbstractModifier {
-    public static checkType(mod: string): void {
-        if (!isString(mod))
+    public static checkType(arg: any, mod: string): void {
+        if (!isInteger(arg))
             throw new Error(`Mod ${mod} only supports integer types`);
     }
 }
 
 abstract class FloatModifier extends AbstractModifier {
-    public static checkType(mod: string): void {
-        if (!isString(mod))
+    public static checkType(arg: any, mod: string): void {
+        if (!isFloat(arg))
             throw new Error(`Mod ${mod} only supports float types`);
     }
 }
@@ -119,12 +119,14 @@ export default class ModifierFactory {
             case "j":
                 modclass = ModJ;
                 break;
-            case "":
+            case undefined:
                 modclass = this.getDefaultModifier(arg);
                 break;
             default: throw new Error(`Mod ${modrules.mod} is not implemented`);
         }
-        modclass.checkType(modrules.mod);
+        // Because we already check when we run this.getDefaultModifier(arg);
+        if (typeof modrules.mod !== "undefined")
+            modclass.checkType(arg, modrules.mod);
 
         return new modclass(modrules, arg);
     }
