@@ -1,6 +1,6 @@
 {
     "name": "morpeu",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Format strings like a pro",
     "main": "dist/index.js",
     "scripts": {
