@@ -60,6 +60,11 @@ abstract class StringModifier extends AbstractModifier {
         if (!isString(arg))
             throw new Error(`Mod ${mod} only supports string types`);
     }
+
+    public applyPrecision(): void {
+        if (typeof this.modrules.precision !== "undefined")
+            this.io = (this.io as string).slice(0, this.modrules.precision);
+    }
 }
 
 abstract class IntegerModifier extends AbstractModifier {
@@ -73,6 +78,11 @@ abstract class IntegerModifier extends AbstractModifier {
         if (typeof this.modrules.align === "undefined")
             this.modrules.align = ">";
         super.applyPadding();
+    }
+
+    public applyPrecision(): void {
+        if (typeof this.modrules.precision !== "undefined")
+            throw new Error("Integer type modifiers does not support precision");
     }
 }
 
@@ -88,29 +98,19 @@ abstract class FloatModifier extends AbstractModifier {
             this.modrules.align = ">";
         super.applyPadding();
     }
-}
 
-class ModS extends StringModifier {
-    public applyPrecision(): void {
-        if (typeof this.modrules.precision !== "undefined")
-            this.io = (this.io as string).slice(0, this.modrules.precision);
-    }
-}
-
-class ModI extends IntegerModifier {
-    public applyPrecision(): void {
-        if (typeof this.modrules.precision !== "undefined")
-            throw new Error("Mod i does not support precision");
-    }
-}
-
-class ModF extends FloatModifier {
     public applyPrecision(): void {
         const { precision = 6 } = this.modrules;
 
         this.io = (this.io as number).toFixed(precision);
     }
 }
+
+class ModS extends StringModifier {}
+
+class ModI extends IntegerModifier {}
+
+class ModF extends FloatModifier {}
 
 class ModJ extends AbstractModifier {
     public static checkType(): void {
