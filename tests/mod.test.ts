@@ -59,6 +59,12 @@ describe("Mod i", () => {
     });
 });
 
+describe("Mod b", () => {
+    test("evaluates integer to binary", () => {
+        expect(parseThenEval("{|b}", [255])).toBe("11111111");
+    });
+});
+
 describe("Mod f", () => {
     test("evaluates floats with default precision 6", () => {
         expect(parseThenEval("{|f}", [2.7])).toBe("2.700000");
