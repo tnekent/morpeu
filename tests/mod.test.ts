@@ -1,143 +1,139 @@
-import morph = require("../src/index");
+import Parser from "../src/parse";
+import Evaluator from "../src/eval";
+
+function parseThenEval(input: string, arglist: any[]): string {
+    return new Evaluator(new Parser(input).parse(), arglist).eval();
+}
 
 describe("Mod s", () => {
     test("evaluates string", () => {
-        const result = morph("{|s}", "Hello");
-        expect(result).toBe("Hello");
+        expect(parseThenEval("{|s}", ["Hello"])).toBe("Hello");
     });
 
     test("evaluates padding", () => {
-        const result = morph("{|5s}", "Padded");
-        expect(result).toBe("Padded     ");
+        expect(parseThenEval("{|5s}", ["Padded"])).toBe("Padded     ");
     });
 
     test("evaluates padding with align as >", () => {
-        const result = morph("{|>5s}", "Padded");
-        expect(result).toBe("     Padded");
+        expect(parseThenEval("{|>5s}", ["Padded"])).toBe("     Padded");
     });
 
     test("applies precision", () => {
-        const result = morph("{|.4s}", "Stoppppp");
-        expect(result).toBe("Stop");
+        expect(parseThenEval("{|.4s}", ["Stoppppp"])).toBe("Stop");
     });
 
     test("errors on non-string arguments", () => {
         expect(() => {
-            morph("{|s}", 5);
-            morph("{|s}", 1.2);
-            morph("{|s}", null);
-            morph("{|s}", Math);
+            parseThenEval("{|s}", [5]);
+            parseThenEval("{|s}", [1.2]);
+            parseThenEval("{|s}", [null]);
+            parseThenEval("{|s}", [Math]);
         });
     });
 });
 
 describe("Mod i", () => {
     test("evaluates integers", () => {
-        const result = morph("{|i}", 20);
-        expect(result).toBe("20");
+        expect(parseThenEval("{|i}", [20])).toBe("20");
     });
 
     test("evaluates padding", () => {
-        const result = morph("{|4i}", 4);
-        expect(result).toBe("    4");
+        expect(parseThenEval("{|4i}", [4])).toBe("    4");
     });
 
     test("evaluates padding with align as ^", () => {
-        const result = morph("{|^4i}", 4);
-        expect(result).toBe("  4  ");
+        expect(parseThenEval("{|^4i}", [4])).toBe("  4  ");
     });
 
     test("errors on specified precision", () => {
-        expect(() => morph("{|.1i}", 123456)).toThrow();
+        expect(() => parseThenEval("{|.1i}", [123456])).toThrow();
     });
 
     test("errors on non-integer arguments", () => {
         expect(() => {
-            morph("{|i}", "int");
-            morph("{|i}", 3.5);
-            morph("{|i}", null);
-            morph("{|i}", String);
+            parseThenEval("{|i}", ["int"]);
+            parseThenEval("{|i}", [3.5]);
+            parseThenEval("{|i}", [null]);
+            parseThenEval("{|i}", [String]);
         });
     });
 });
 
 describe("Mod f", () => {
     test("evaluates floats with default precision 6", () => {
-        const result = morph("{|f}", 2.7);
-        expect(result).toBe("2.700000");
+        expect(parseThenEval("{|f}", [2.7])).toBe("2.700000");
     });
 
     test("evaluates padding", () => {
-        const result = morph("{|3f}", 3.765);
-        expect(result).toBe("   3.765000");
+        expect(parseThenEval("{|3f}", [3.765])).toBe("   3.765000");
     });
 
     test("evaluates padding with align as <", () => {
-        const result = morph("{|<2f}", 3.765);
-        expect(result).toBe("3.765000  ");
+        expect(parseThenEval("{|<2f}", [3.765])).toBe("3.765000  ");
     });
 
     test("applies precision", () => {
-        const result = morph("{|.2f}", 3.14159);
-        expect(result).toBe("3.14");
+        expect(parseThenEval("{|.2f}", [3.14159])).toBe("3.14");
     });
 
     test("automatically rounds off by precision", () => {
-        const result = morph("{|.3f}", 3.1239);
-        expect(result).toBe("3.124");
+        expect(parseThenEval("{|.3f}", [3.1239])).toBe("3.124");
     });
 
-    test("errors on non-integer arguments", () => {
+    test("errors on non-float arguments", () => {
         expect(() => {
-            morph("{|f}", "float");
-            morph("{|f}", 0);
-            morph("{|f}", undefined);
-            morph("{|f}", Number);
+            parseThenEval("{|f}", ["float"]);
+            parseThenEval("{|f}", [0]);
+            parseThenEval("{|f}", [undefined]);
+            parseThenEval("{|f}", [Number]);
         });
     });
 });
 
 describe("Mod j", () => {
     test("evaluates padding", () => {
-        const obj = { yes: "no" },
-            result = morph("{|1j}", obj);
+        const obj = { yes: "no" };
 
-        expect(result).toBe(`${JSON.stringify(obj)} `);
+        expect(parseThenEval("{|1j}", [obj])).toBe(`${JSON.stringify(obj)} `);
     });
 
-    test("evaluates padding with align as ^", () => {
-        const obj = { yes: "no" },
-            result = morph("{|^3j}", obj);
+    test("evaluates padding with extra spaces on left when align is ^ and padding amount is odd", () => {
+        const obj = { yes: "no" };
 
-        expect(result).toBe(`  ${JSON.stringify(obj)} `);
+        expect(parseThenEval("{|^3j}", [obj])).toBe(`  ${JSON.stringify(obj)} `);
     });
 
     test("evaluates an object", () => {
-        const obj = { user: "Foo" },
-            result = morph("{|j}", obj);
+        const obj = { user: "Foo" };
 
-        expect(result).toBe(JSON.stringify(obj));
+        expect(parseThenEval("{|j}", [obj])).toBe(JSON.stringify(obj));
     });
 
     test("evaluates an array", () => {
-        const arr = [1, "2", { i: 3 }],
-            result = morph("{|j}", arr);
+        const arr = [1, "2", { i: 3 }];
 
-        expect(result).toBe(JSON.stringify(arr));
+        expect(parseThenEval("{|j}", [arr])).toBe(JSON.stringify(arr));
     });
 
     test("evaluates primitive values", () => {
-        let result = morph("{|j}", true);
-        expect(result).toBe(JSON.stringify(true));
-        result = morph("{|j}", "bar");
-        expect(result).toBe(JSON.stringify("bar"));
-        result = morph("{|j}", 3.05);
-        expect(result).toBe(JSON.stringify(3.05));
-        result = morph("{|j}", 2000);
-        expect(result).toBe(JSON.stringify(2000));
+        expect(parseThenEval("{|j}", [true])).toBe(JSON.stringify(true));
+        expect(parseThenEval("{|j}", ["bar"])).toBe(JSON.stringify("bar"));
+        expect(parseThenEval("{|j}", [3.05])).toBe(JSON.stringify(3.05));
+        expect(parseThenEval("{|j}", [2000])).toBe(JSON.stringify(2000));
     });
 
     test("errors on specified precision", () => {
-        expect(() => morph("{|.2j}", { should: "error" })).toThrow();
+        expect(() => parseThenEval("{|.2j}", [{ should: "error" }])).toThrow();
     });
+});
+
+test("evaluates arg according to type when mod is unspecified", () => {
+    // Defaults to mod s
+    expect(parseThenEval("{}", ["string"])).toBe("string");
+    // Defaults to mod i
+    expect(parseThenEval("{}", [5])).toBe("5");
+    // Defaults to mod s
+    expect(parseThenEval("{}", [2.2])).toBe("2.200000");
+    // Defaults to mod j
+    expect(parseThenEval("{}", [null])).toBe("null");
 });

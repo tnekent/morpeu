@@ -136,6 +136,7 @@ class ModJ extends AbstractModifier {
 }
 
 export default class ModifierFactory {
+    // eslint-disable-next-line max-lines-per-function
     public static getModifier(modrules: ModRules, arg: any): Modifier {
         let modclass: StaticModifier;
         switch (modrules.mod) {

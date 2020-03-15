@@ -66,7 +66,7 @@ describe("Format type field", () => {
             expect(index).toBe(1);
         });
 
-        test("parses index even when unspecified", () => {
+        test("parses index as undefined when unspecified", () => {
             const iter = new Parser("{.a.b|}").parse(),
                 { index } = iter.next().value.value.argrules;
 
