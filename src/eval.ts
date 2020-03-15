@@ -28,8 +28,15 @@ class FormatFieldEvaluator implements Evaluator<string> {
     }
 
     private getArg(): any {
-        const { index = FormatFieldEvaluator.autoIndexAt++,
-            props } = this.argrules;
+        const { props } = this.argrules;
+        let { index } = this.argrules;
+
+        if (typeof index === "undefined")
+            if (FormatFieldEvaluator.manuallyIndexed === true)
+                throw new Error("Cannot switch back to automatic indexing after manually indexing");
+            else index = FormatFieldEvaluator.autoIndexAt++;
+        else FormatFieldEvaluator.manuallyIndexed = true;
+
 
         if (index > this.arglist.length - 1)
             throw new Error(`Index ${index} out of bounds from argument list`);
@@ -55,6 +62,7 @@ class FormatFieldEvaluator implements Evaluator<string> {
     }
 
     public static autoIndexAt = 0;
+    public static manuallyIndexed = false;
 }
 
 export default class MainEvaluator implements Evaluator<string> {
@@ -69,6 +77,7 @@ export default class MainEvaluator implements Evaluator<string> {
     public eval(): string {
         let result = "";
         FormatFieldEvaluator.autoIndexAt = 0;
+        FormatFieldEvaluator.manuallyIndexed = false;
         for (const field of this.iter)
             switch (field.type) {
                 case "const":
