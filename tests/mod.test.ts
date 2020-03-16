@@ -65,6 +65,12 @@ describe("Mod b", () => {
     });
 });
 
+describe("Mod x", () => {
+    test("evaluates integer to hexadecimal", () => {
+        expect(parseThenEval("{|x}", [939])).toBe("3ab");
+    });
+});
+
 describe("Mod f", () => {
     test("evaluates floats with default precision 6", () => {
         expect(parseThenEval("{|f}", [2.7])).toBe("2.700000");

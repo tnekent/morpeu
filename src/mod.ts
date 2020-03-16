@@ -118,6 +118,14 @@ class ModB extends IntegerModifier {
     }
 }
 
+class ModX extends IntegerModifier {
+    public morph(): string {
+        this.io = (this.io as number).toString(16);
+
+        return super.morph();
+    }
+}
+
 class ModF extends FloatModifier {}
 
 class ModJ extends AbstractModifier {
@@ -156,6 +164,9 @@ export default class ModifierFactory {
                 break;
             case "b":
                 modclass = ModB;
+                break;
+            case "x":
+                modclass = ModX;
                 break;
             case "f":
                 modclass = ModF;
