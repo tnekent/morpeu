@@ -34,6 +34,7 @@ The delimiter pipe ("|") is similar to to the colon (:) of Python's.
 Modifiers has four types according to the argument they accept and modify.
 
 1. String type
+
 Precision indicates the length of the string.
 
 | Modifier | Description |
@@ -41,6 +42,7 @@ Precision indicates the length of the string.
 | `s` | Modifier for strings. The default when no modifier is specified and the argument is of string type. |
 
 2. Integer type
+
 A specified precision results in an error.
 
 | Modifier | Description |
@@ -52,6 +54,7 @@ A specified precision results in an error.
 | `X` | Same as `x`, but output letters as uppercase.  |
 
 3. Float type
+
 Precision indicates the number of decimal digits after the dot.
 
 | Modifier | Description |
@@ -59,6 +62,7 @@ Precision indicates the number of decimal digits after the dot.
 | `f` | Modifier for floats. The default when no modifier is specified and the argument is of float type. |
 
 4. Any type
+
 Any type accepts any valid JavaScript value. A specified precision results in a error.
 
 | Modifier | Description |
