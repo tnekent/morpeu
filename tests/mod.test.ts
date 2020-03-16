@@ -71,6 +71,12 @@ describe("Mod x", () => {
     });
 });
 
+describe("Mod o", () => {
+    test("evaluates integer to octal", () => {
+        expect(parseThenEval("{|o}", [1024])).toBe("2000");
+    });
+});
+
 describe("Mod f", () => {
     test("evaluates floats with default precision 6", () => {
         expect(parseThenEval("{|f}", [2.7])).toBe("2.700000");
