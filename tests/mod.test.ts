@@ -71,6 +71,12 @@ describe("Mod x", () => {
     });
 });
 
+describe("Mod X", () => {
+    test("evaluates integer to hexadecimal", () => {
+        expect(parseThenEval("{|X}", [939])).toBe("3AB");
+    });
+});
+
 describe("Mod o", () => {
     test("evaluates integer to octal", () => {
         expect(parseThenEval("{|o}", [1024])).toBe("2000");

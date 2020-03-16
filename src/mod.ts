@@ -126,6 +126,14 @@ class ModX extends IntegerModifier {
     }
 }
 
+class ModXX extends IntegerModifier {
+    public morph(): string {
+        this.io = (this.io as number).toString(16).toUpperCase();
+
+        return super.morph();
+    }
+}
+
 class ModO extends IntegerModifier {
     public morph(): string {
         this.io = (this.io as number).toString(8);
@@ -160,7 +168,7 @@ class ModJ extends AbstractModifier {
 }
 
 export default class ModifierFactory {
-    // eslint-disable-next-line max-lines-per-function
+    // eslint-disable-next-line max-lines-per-function complexity
     public static getModifier(modrules: ModRules, arg: any): Modifier {
         let modclass: StaticModifier;
         switch (modrules.mod) {
@@ -175,6 +183,9 @@ export default class ModifierFactory {
                 break;
             case "x":
                 modclass = ModX;
+                break;
+            case "X":
+                modclass = ModXX;
                 break;
             case "o":
                 modclass = ModO;
