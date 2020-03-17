@@ -253,7 +253,7 @@ export default class ModifierFactory {
         switch (true) {
             case isString(arg): return ModS;
             case isInteger(arg): return ModI;
-            case isFloat(arg): return ModF;
+            case isFloat(arg): return ModG;
             default: return ModJ;
         }
     }

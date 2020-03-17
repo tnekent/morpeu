@@ -209,8 +209,8 @@ test("evaluates arg according to type when mod is unspecified", () => {
     expect(parseThenEval("{}", ["string"])).toBe("string");
     // Defaults to mod i
     expect(parseThenEval("{}", [5])).toBe("5");
-    // Defaults to mod s
-    expect(parseThenEval("{}", [2.2])).toBe("2.200000");
+    // Defaults to mod g
+    expect(parseThenEval("{}", [2000000.20])).toBe("2e+6");
     // Defaults to mod j
     expect(parseThenEval("{}", [null])).toBe("null");
 });
