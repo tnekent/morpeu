@@ -182,7 +182,7 @@ class ModRulesParser extends AbstractParser<ModRules> {
     }
 
     private parseMod(): string {
-        const mod = this.matchAndUpdate(/^[A-Za-z]/);
+        const mod = this.matchAndUpdate(/^[A-Za-z%]/);
 
         return typeof mod !== "undefined" ? mod : undefined;
     }
