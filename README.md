@@ -56,11 +56,12 @@ A specified precision results in an error.
 3. Float type
 
 Float types support both floats and integers (which are transformed into floats).
-Precision indicates the number of decimal digits after the dot.
+Precision indicates the number of decimal digits after the dot. Default precision is 6.
 
 | Modifier | Description |
 | -------- | ----------- |
 | `f` | Modifies floats as is. The default when no modifier is specified and the argument is of float type. |
+| `e` | Modifies floats to scientific notation using _e_ as exponent indicator. |
 
 4. Any type
 
