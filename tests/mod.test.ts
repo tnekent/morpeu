@@ -117,6 +117,39 @@ describe("Mod f", () => {
     });
 });
 
+describe("Mod g", () => {
+    test("evaluates to scientific notation when exponent of num < -4", () => {
+        expect(parseThenEval("{|g}", [0.000001])).toBe("1e-6");
+    });
+
+    test("evaluates to fixed-notation when exponent of num = -4", () => {
+        expect(parseThenEval("{|g}", [0.0001])).toBe("0.0001");
+    });
+
+    test("evaluates to fixed-notation when exponent of num > -4 and num < precision", () => {
+        expect(parseThenEval("{|.6g}", [1.23456])).toBe("1.23456");
+        expect(parseThenEval("{|.6g}", [12.3456])).toBe("12.3456");
+        expect(parseThenEval("{|.6g}", [123.456])).toBe("123.456");
+        expect(parseThenEval("{|.6g}", [1234.56])).toBe("1234.56");
+    });
+
+    test("evaluates to fixed-notation when exponent of num < precision", () => {
+        expect(parseThenEval("{|.6g}", [100000])).toBe("100000");
+    });
+
+    test("evaluates to scientific notation when exponent of num = precision", () => {
+        expect(parseThenEval("{|.6g}", [1000000])).toBe("1e+6");
+    });
+
+    test("evaluates to scientific notation when exponent of num > precision", () => {
+        expect(parseThenEval("{|.6g}", [100000000])).toBe("1e+8");
+    });
+
+    test("evaluates to scientific notation when exponent of num > precision", () => {
+        expect(parseThenEval("{|.6g}", [100000000])).toBe("1e+8");
+    });
+});
+
 describe("Mod e", () => {
     test("evaluates positive exponents", () => {
         expect(parseThenEval("{|e}", [123456789]))

@@ -144,6 +144,34 @@ class ModO extends IntegerModifier {
 
 class ModF extends FloatModifier {}
 
+class ModG extends FloatModifier {
+    public applyPrecision(): void {
+        const { precision = 6 } = this.modrules,
+            exponentForm = (this.io as number).toExponential(precision),
+            exponentN = parseInt(/[+-]\d+$/.exec(exponentForm)[0]);
+
+        if (exponentN < -4 || exponentN >= precision) {
+            const significand = exponentForm.slice(0, exponentForm.indexOf("e")),
+                exp = exponentForm.slice(significand.length);
+
+            this.io = this.removeTrailingZeroesAndDot(significand) + exp;
+        }
+        else
+            this.io = this.removeTrailingZeroesAndDot((this.io as number).toFixed(precision));
+
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    private removeTrailingZeroesAndDot(from: string): string {
+        let trimIndex = from.length - 1;
+        for (let i = trimIndex; i >= 0 && from[i] === "0"; i--)
+            trimIndex--;
+        if (from[trimIndex] === ".") trimIndex--;
+
+        return from.slice(0, trimIndex + 1);
+    }
+}
+
 class ModE extends FloatModifier {
     public applyPrecision(): void {
         const { precision = 6 } = this.modrules;
@@ -199,6 +227,9 @@ export default class ModifierFactory {
                 break;
             case "f":
                 modclass = ModF;
+                break;
+            case "g":
+                modclass = ModG;
                 break;
             case "e":
                 modclass = ModE;
