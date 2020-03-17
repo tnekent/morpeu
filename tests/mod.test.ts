@@ -104,10 +104,13 @@ describe("Mod f", () => {
         expect(parseThenEval("{|.3f}", [3.1239])).toBe("3.124");
     });
 
+    test("accepts integers", () => {
+        expect(parseThenEval("{|f}", [1000])).toBeDefined();
+    });
+
     test("errors on non-float arguments", () => {
         expect(() => {
             parseThenEval("{|f}", ["float"]);
-            parseThenEval("{|f}", [0]);
             parseThenEval("{|f}", [undefined]);
             parseThenEval("{|f}", [Number]);
         });

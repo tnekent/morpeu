@@ -55,6 +55,7 @@ A specified precision results in an error.
 
 3. Float type
 
+Float types support both floats and integers (which are then transformed into floats).
 Precision indicates the number of decimal digits after the dot.
 
 | Modifier | Description |

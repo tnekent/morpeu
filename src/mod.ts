@@ -88,7 +88,7 @@ abstract class IntegerModifier extends AbstractModifier {
 
 abstract class FloatModifier extends AbstractModifier {
     public static checkType(arg: any, mod: string): void {
-        if (!isFloat(arg))
+        if (typeof arg !== "number")
             throw new Error(`Mod ${mod} only supports float types`);
     }
 
