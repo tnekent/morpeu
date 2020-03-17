@@ -125,7 +125,7 @@ describe("Mod e", () => {
 
     test("evaluates negative exponents", () => {
         expect(parseThenEval("{|e}", [0.12345678]))
-            .toBe("1.234568e-7");
+            .toBe("1.234568e-1");
     });
 
     test("applies precision", () => {
