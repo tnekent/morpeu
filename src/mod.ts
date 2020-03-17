@@ -144,6 +144,13 @@ class ModO extends IntegerModifier {
 
 class ModF extends FloatModifier {}
 
+class ModE extends FloatModifier {
+    public applyPrecision(): void {
+        const { precision = 6 } = this.modrules;
+        this.io = (this.io as number).toExponential(precision);
+    }
+}
+
 class ModJ extends AbstractModifier {
     public static checkType(): void {
         // Since any JavaScript value is serializable to JSON,
@@ -168,7 +175,7 @@ class ModJ extends AbstractModifier {
 }
 
 export default class ModifierFactory {
-    // eslint-disable-next-line max-lines-per-function complexity
+    // eslint-disable-next-line complexity, max-lines-per-function
     public static getModifier(modrules: ModRules, arg: any): Modifier {
         let modclass: StaticModifier;
         switch (modrules.mod) {
@@ -192,6 +199,9 @@ export default class ModifierFactory {
                 break;
             case "f":
                 modclass = ModF;
+                break;
+            case "e":
+                modclass = ModE;
                 break;
             case "j":
                 modclass = ModJ;
