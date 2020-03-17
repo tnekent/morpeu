@@ -39,7 +39,7 @@ Precision indicates the length of the string.
 
 | Modifier | Description |
 | -------- | ----------- |
-| `s` | Modifier for strings. The default when no modifier is specified and the argument is of string type. |
+| `s` | Modifies strings as is. The default when no modifier is specified and the argument is of string type. |
 
 2. Integer type
 
@@ -47,7 +47,7 @@ A specified precision results in an error.
 
 | Modifier | Description |
 | -------- | ----------- |
-| `i` | Modifier for integers. The default when no modifier is specified and the argument is of integer type. |
+| `i` | Modifies integers as is. The default when no modifier is specified and the argument is of integer type. |
 | `b` | Modifies integers to binary. |
 | `o` | Modifies integers to octal. |
 | `x` | Modifies integers to hexadecimal. Outputs letters in lowercase. |
@@ -55,12 +55,12 @@ A specified precision results in an error.
 
 3. Float type
 
-Float types support both floats and integers (which are then transformed into floats).
+Float types support both floats and integers (which are transformed into floats).
 Precision indicates the number of decimal digits after the dot.
 
 | Modifier | Description |
 | -------- | ----------- |
-| `f` | Modifier for floats. The default when no modifier is specified and the argument is of float type. |
+| `f` | Modifies floats as is. The default when no modifier is specified and the argument is of float type. |
 
 4. Any type
 
