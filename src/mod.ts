@@ -179,6 +179,13 @@ class ModE extends FloatModifier {
     }
 }
 
+class ModEE extends FloatModifier {
+    public applyPrecision(): void {
+        const { precision = 6 } = this.modrules;
+        this.io = (this.io as number).toExponential(precision).toUpperCase();
+    }
+}
+
 class ModJ extends AbstractModifier {
     public static checkType(): void {
         // Since any JavaScript value is serializable to JSON,
@@ -233,6 +240,9 @@ export default class ModifierFactory {
                 break;
             case "e":
                 modclass = ModE;
+                break;
+            case "E":
+                modclass = ModEE;
                 break;
             case "j":
                 modclass = ModJ;

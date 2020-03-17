@@ -167,6 +167,23 @@ describe("Mod e", () => {
     });
 });
 
+describe("Mod E", () => {
+    test("evaluates positive exponents", () => {
+        expect(parseThenEval("{|E}", [123456789]))
+            .toBe("1.234568E+8");
+    });
+
+    test("evaluates negative exponents", () => {
+        expect(parseThenEval("{|E}", [0.12345678]))
+            .toBe("1.234568E-1");
+    });
+
+    test("applies precision", () => {
+        expect(parseThenEval("{|.3E}", [1000000]))
+            .toBe("1.000E+6");
+    });
+});
+
 describe("Mod j", () => {
     test("evaluates padding", () => {
         const obj = { yes: "no" };
