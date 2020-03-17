@@ -186,6 +186,17 @@ class ModEE extends FloatModifier {
     }
 }
 
+class ModPercent extends FloatModifier {
+    public morph(): string {
+        this.io *= 100;
+        this.applyPrecision();
+        this.io += "%";
+        this.applyPadding();
+
+        return this.io;
+    }
+}
+
 class ModJ extends AbstractModifier {
     public static checkType(): void {
         // Since any JavaScript value is serializable to JSON,
@@ -243,6 +254,9 @@ export default class ModifierFactory {
                 break;
             case "E":
                 modclass = ModEE;
+                break;
+            case "%":
+                modclass = ModPercent;
                 break;
             case "j":
                 modclass = ModJ;

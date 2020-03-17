@@ -184,6 +184,16 @@ describe("Mod E", () => {
     });
 });
 
+describe("Mod %", () => {
+    test("evaluates to percentage with sign", () => {
+        expect(parseThenEval("{|%}", [0.05])).toBe("5.000000%");
+    });
+
+    test("applies precision", () => {
+        expect(parseThenEval("{|.2%}", [1.05])).toBe("105.00%");
+    });
+});
+
 describe("Mod j", () => {
     test("evaluates padding", () => {
         const obj = { yes: "no" };
