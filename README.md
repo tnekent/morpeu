@@ -47,10 +47,10 @@ A specified precision results in an error.
 
 | Modifier | Description |
 | -------- | ----------- |
-| `i` | Modifies integers as is. The default when no modifier is specified and the argument is of integer type. |
-| `b` | Modifies integers to binary. |
-| `o` | Modifies integers to octal. |
-| `x` | Modifies integers to hexadecimal. Outputs letters in lowercase. |
+| `i` | Modifies argument as is. The default when no modifier is specified and the argument is of integer type. |
+| `b` | Modifies argument to binary. |
+| `o` | Modifies argument to octal. |
+| `x` | Modifies argument to hexadecimal. Outputs letters in lowercase. |
 | `X` | Same as `x`, but output letters as uppercase.  |
 
 3. Float type
@@ -60,8 +60,11 @@ Precision indicates the number of decimal digits after the dot. Default precisio
 
 | Modifier | Description |
 | -------- | ----------- |
-| `f` | Modifies floats as is. The default when no modifier is specified and the argument is of float type. |
-| `e` | Modifies floats to scientific notation using _e_ as exponent indicator. |
+| `f` | Modifies float to fixed-point form. |
+| `g` | Modifies float by a series of steps: the argument is transformed to scientific notation with precision "p" to get "exp", the exponent of the value. If `-4 <= exp < p`, format the original argument like with modifier `f` with precision "p". Else, format the argument like with modifier `e` with precision "p". In either case, the result is stripped off of insignificant trailing zeroes, and the decimal point if no digits follow it. The default when no modifier is specified and the argument is of float type. |
+| `e` | Modifies float to scientific notation using _e_ as exponent indicator. |
+| `E` | Same as `e` but use _E_ as exponent indicator. |
+| `%` | Modifies float by multiplying by 100, transforming to fixed-point form, and appending a %. |
 
 4. Any type
 
