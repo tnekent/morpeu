@@ -15,11 +15,13 @@ const isString = (arg: any): boolean => typeof arg === "string",
 
 abstract class AbstractModifier implements Modifier {
     protected modrules: ModRules;
-    protected io: any;
+    protected arg: any;
+    protected output: string;
 
     public constructor(modrules: ModRules, arg: any) {
         this.modrules = modrules;
-        this.io = arg;
+        this.arg = arg;
+        this.output = String(arg);
     }
 
     public applyPadding(): void {
@@ -28,16 +30,16 @@ abstract class AbstractModifier implements Modifier {
 
             switch (align) {
                 case "<":
-                    this.io = `${this.io}${" ".repeat(padding)}`;
+                    this.output = `${this.output}${" ".repeat(padding)}`;
                     break;
 
                 case ">":
-                    this.io = `${" ".repeat(padding)}${this.io}`;
+                    this.output = `${" ".repeat(padding)}${this.output}`;
                     break;
 
                 case "^": {
                     const left = Math.ceil(padding / 2), right = padding - left;
-                    this.io = `${" ".repeat(left)}${this.io}${" ".repeat(right)}`;
+                    this.output = `${" ".repeat(left)}${this.output}${" ".repeat(right)}`;
                 }
                     break;
 
@@ -51,7 +53,7 @@ abstract class AbstractModifier implements Modifier {
         this.applyPrecision();
         this.applyPadding();
 
-        return this.io;
+        return this.output;
     }
 }
 
@@ -63,7 +65,7 @@ abstract class StringModifier extends AbstractModifier {
 
     public applyPrecision(): void {
         if (typeof this.modrules.precision !== "undefined")
-            this.io = (this.io as string).slice(0, this.modrules.precision);
+            this.output = (this.arg as string).slice(0, this.modrules.precision);
     }
 }
 
@@ -102,7 +104,7 @@ abstract class FloatModifier extends AbstractModifier {
     public applyPrecision(): void {
         const { precision = 6 } = this.modrules;
 
-        this.io = (this.io as number).toFixed(precision);
+        this.output = (this.arg as number).toFixed(precision);
     }
 }
 
@@ -112,7 +114,7 @@ class ModI extends IntegerModifier {}
 
 class ModB extends IntegerModifier {
     public morph(): string {
-        this.io = (this.io as number).toString(2);
+        this.output = (this.arg as number).toString(2);
 
         return super.morph();
     }
@@ -120,7 +122,7 @@ class ModB extends IntegerModifier {
 
 class ModX extends IntegerModifier {
     public morph(): string {
-        this.io = (this.io as number).toString(16);
+        this.output = (this.arg as number).toString(16);
 
         return super.morph();
     }
@@ -128,7 +130,7 @@ class ModX extends IntegerModifier {
 
 class ModXX extends IntegerModifier {
     public morph(): string {
-        this.io = (this.io as number).toString(16).toUpperCase();
+        this.output = (this.arg as number).toString(16).toUpperCase();
 
         return super.morph();
     }
@@ -136,7 +138,7 @@ class ModXX extends IntegerModifier {
 
 class ModO extends IntegerModifier {
     public morph(): string {
-        this.io = (this.io as number).toString(8);
+        this.output = (this.arg as number).toString(8);
 
         return super.morph();
     }
@@ -147,17 +149,17 @@ class ModF extends FloatModifier {}
 class ModG extends FloatModifier {
     public applyPrecision(): void {
         const { precision = 6 } = this.modrules,
-            exponentForm = (this.io as number).toExponential(precision),
+            exponentForm = (this.arg as number).toExponential(precision),
             exponentN = parseInt(/[+-]\d+$/.exec(exponentForm)[0]);
 
         if (exponentN < -4 || exponentN >= precision) {
             const significand = exponentForm.slice(0, exponentForm.indexOf("e")),
                 exp = exponentForm.slice(significand.length);
 
-            this.io = this.removeTrailingZeroesAndDot(significand) + exp;
+            this.output = this.removeTrailingZeroesAndDot(significand) + exp;
         }
         else
-            this.io = this.removeTrailingZeroesAndDot((this.io as number).toFixed(precision));
+            this.output = this.removeTrailingZeroesAndDot((this.arg as number).toFixed(precision));
 
     }
 
@@ -175,25 +177,25 @@ class ModG extends FloatModifier {
 class ModE extends FloatModifier {
     public applyPrecision(): void {
         const { precision = 6 } = this.modrules;
-        this.io = (this.io as number).toExponential(precision);
+        this.output = (this.arg as number).toExponential(precision);
     }
 }
 
 class ModEE extends FloatModifier {
     public applyPrecision(): void {
         const { precision = 6 } = this.modrules;
-        this.io = (this.io as number).toExponential(precision).toUpperCase();
+        this.output = (this.arg as number).toExponential(precision).toUpperCase();
     }
 }
 
 class ModPercent extends FloatModifier {
     public morph(): string {
-        this.io *= 100;
+        this.arg *= 100;
         this.applyPrecision();
-        this.io += "%";
+        this.output += "%";
         this.applyPadding();
 
-        return this.io;
+        return this.output;
     }
 }
 
@@ -210,7 +212,7 @@ class ModJ extends AbstractModifier {
     }
 
     private toJSON(): void {
-        this.io = JSON.stringify(this.io);
+        this.output = JSON.stringify(this.arg);
     }
 
     public morph(): string {
