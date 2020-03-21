@@ -69,17 +69,19 @@ abstract class StringModifier extends AbstractModifier {
     }
 }
 
-abstract class IntegerModifier extends AbstractModifier {
-    public static checkType(arg: any, mod: string): void {
-        if (!isInteger(arg))
-            throw new Error(`Mod ${mod} only supports integer types`);
-    }
-
+abstract class NumericModifier extends AbstractModifier {
     public applyPadding(): void {
         // Default align symbol for numbers is ">"
         if (typeof this.modrules.align === "undefined")
             this.modrules.align = ">";
         super.applyPadding();
+    }
+}
+
+abstract class IntegerModifier extends NumericModifier {
+    public static checkType(arg: any, mod: string): void {
+        if (!isInteger(arg))
+            throw new Error(`Mod ${mod} only supports integer types`);
     }
 
     public applyPrecision(): void {
@@ -88,17 +90,10 @@ abstract class IntegerModifier extends AbstractModifier {
     }
 }
 
-abstract class FloatModifier extends AbstractModifier {
+abstract class FloatModifier extends NumericModifier {
     public static checkType(arg: any, mod: string): void {
         if (typeof arg !== "number")
             throw new Error(`Mod ${mod} only supports float types`);
-    }
-
-    public applyPadding(): void {
-        // Default align symbol for numbers is ">"
-        if (typeof this.modrules.align === "undefined")
-            this.modrules.align = ">";
-        super.applyPadding();
     }
 
     public applyPrecision(): void {
