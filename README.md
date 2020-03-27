@@ -15,7 +15,7 @@ morph("Format {1} like a {0[like-what]}", { "like-what": "boss" }, "strings");
 
 ## Format Rules Language
 ```
-"{" [arg_index] ( "[" bracket_prop "]" | "." dot_prop )* "|" [align] [padding] ["." precision] [mod] "}"
+"{" [arg_index] ( "[" bracket_prop "]" | "." dot_prop )* "|" [align] [sign] [padding] ["." precision] [mod] "}"
 ```
 Where:
 * `arg_index`: A number specifying the index of the argument in the argument list.
@@ -25,6 +25,10 @@ Where:
    * `>`: Right aligns the output. Default for most types.
    * `<`: Left aligns the output. Default for numbers (integers and floats).
    * `^`: Center aligns the output. If specified `padding` is odd, the extra space is applied to the left.
+* `sign`: Controls the placement of signs in numbers. Only valid for integer and float type modifiers.
+   * `+`: Prepend a plus sign before positive numbers and a minus sign before negative numbers.
+   * `-`: Don't prepend anything on positive numbers but prepend a minus sign before negative numbers. The default behavior.
+   * <space>: Prepend a space before positive numbers and a minus sign before negative numbers.
 * `padding`: A positive number for specifying the padding amount to be applied.
 * `precision`: A positive number for specifying the precision amount to be applied.
 * `mod`: See [Modifiers](#Modifiers).
