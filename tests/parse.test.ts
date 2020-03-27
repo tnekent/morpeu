@@ -135,6 +135,22 @@ describe("Format type field", () => {
             expect(align).toBe("<");
         });
 
+        test("parses sign", () => {
+            let iter = new Parser("{|+}").parse(),
+                { sign } = iter.next().value.value.modrules;
+
+            expect(sign).toBe("+");
+
+            iter = new Parser("{|-}").parse();
+            sign = iter.next().value.value.modrules.sign;
+
+            expect(sign).toBe("-");
+
+            iter = new Parser("{| }").parse();
+            sign = iter.next().value.value.modrules.sign;
+
+            expect(sign).toBe(" ");
+        });
 
         test("parses mod", () => {
             const iter = new Parser("{|f}").parse(),
