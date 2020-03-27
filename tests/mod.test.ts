@@ -22,6 +22,10 @@ describe("Mod s", () => {
         expect(parseThenEval("{|.4s}", ["Stoppppp"])).toBe("Stop");
     });
 
+    test("errors on specified sign", () => {
+        expect(() => parseThenEval("{|+s}", ["Sign"])).toThrow();
+    });
+
     test("errors on non-string arguments", () => {
         expect(() => {
             parseThenEval("{|s}", [5]);
@@ -47,6 +51,17 @@ describe("Mod i", () => {
 
     test("errors on specified precision", () => {
         expect(() => parseThenEval("{|.1i}", [123456])).toThrow();
+    });
+
+    test("applies sign +", () => {
+        expect(parseThenEval("{|+i}", [-3])).toBe("-3");
+        expect(parseThenEval("{|+i}", [3])).toBe("+3");
+    });
+
+    test("0 is the same regardless of sign", () => {
+        expect(parseThenEval("{|+i}", [0])).toBe("0");
+        expect(parseThenEval("{|-i}", [0])).toBe("0");
+        expect(parseThenEval("{| i}", [0])).toBe("0");
     });
 
     test("errors on non-integer arguments", () => {
@@ -100,8 +115,14 @@ describe("Mod f", () => {
         expect(parseThenEval("{|.2f}", [3.14159])).toBe("3.14");
     });
 
-    test("automatically rounds off by precision", () => {
-        expect(parseThenEval("{|.3f}", [3.1239])).toBe("3.124");
+    test("evaluates sign -", () => {
+        expect(parseThenEval("{|-i}", [-3])).toBe("-3");
+        expect(parseThenEval("{|-i}", [3])).toBe("3");
+    });
+
+    test("applies sign <space>", () => {
+        expect(parseThenEval("{| i}", [-3])).toBe("-3");
+        expect(parseThenEval("{| i}", [3])).toBe(" 3");
     });
 
     test("accepts integers", () => {
@@ -199,6 +220,10 @@ describe("Mod j", () => {
         const obj = { yes: "no" };
 
         expect(parseThenEval("{|1j}", [obj])).toBe(`${JSON.stringify(obj)} `);
+    });
+
+    test("errors on specified sign", () => {
+        expect(() => parseThenEval("{|+j}", [{}])).toThrow();
     });
 
     test("evaluates padding with extra spaces on left when align is ^ and padding amount is odd", () => {

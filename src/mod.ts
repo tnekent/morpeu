@@ -48,9 +48,11 @@ abstract class AbstractModifier implements Modifier {
     }
 
     abstract applyPrecision(): void;
+    abstract applySign(): void;
 
     public morph(): string {
         this.applyPrecision();
+        this.applySign();
         this.applyPadding();
 
         return this.output;
@@ -67,6 +69,11 @@ abstract class StringModifier extends AbstractModifier {
         if (typeof this.modrules.precision !== "undefined")
             this.output = (this.arg as string).slice(0, this.modrules.precision);
     }
+
+    public applySign(): void {
+        if (typeof this.modrules.sign !== "undefined")
+            throw new Error("String type modifiers do not support signs");
+    }
 }
 
 abstract class NumericModifier extends AbstractModifier {
@@ -75,6 +82,23 @@ abstract class NumericModifier extends AbstractModifier {
         if (typeof this.modrules.align === "undefined")
             this.modrules.align = ">";
         super.applyPadding();
+    }
+
+    public applySign(): void {
+        const { sign = "-" } = this.modrules;
+
+        switch (sign) {
+            // Negative numbers are casted with signs so no neednto add "-".
+            case "+":
+                this.output = (this.arg !== 0 && this.arg > 0 ? "+" : "") + this.output;
+                break;
+            case "-":
+                // No-op since casting has same bahavior
+                break;
+            case " ":
+                this.output = (this.arg !== 0 && this.arg > 0 ? " " : "") + this.output;
+                break;
+        }
     }
 }
 
@@ -86,7 +110,7 @@ abstract class IntegerModifier extends NumericModifier {
 
     public applyPrecision(): void {
         if (typeof this.modrules.precision !== "undefined")
-            throw new Error("Integer type modifiers does not support precision");
+            throw new Error("Integer type modifiers do not support precision");
     }
 }
 
@@ -199,6 +223,11 @@ class ModJ extends AbstractModifier {
         // Since any JavaScript value is serializable to JSON,
         // checking always passes.
         return;
+    }
+
+    public applySign(): void {
+        if (typeof this.modrules.sign !== "undefined")
+            throw new Error("String type modifiers do not support signs");
     }
 
     public applyPrecision(): void {
