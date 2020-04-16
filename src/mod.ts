@@ -50,7 +50,13 @@ abstract class AbstractModifier implements Modifier {
     abstract applyPrecision(): void;
     abstract applySign(): void;
 
+    // eslint-disable-next-line class-methods-use-this
+    preprocessOutput(): void {
+        // no-op
+    }
+
     public morph(): string {
+        this.preprocessOutput();
         this.applyPrecision();
         this.applySign();
         this.applyPadding();
@@ -132,34 +138,26 @@ class ModS extends StringModifier {}
 class ModI extends IntegerModifier {}
 
 class ModB extends IntegerModifier {
-    public morph(): string {
+    public preprocessOutput(): void {
         this.output = (this.arg as number).toString(2);
-
-        return super.morph();
     }
 }
 
 class ModX extends IntegerModifier {
-    public morph(): string {
+    public preprocessOutput(): void {
         this.output = (this.arg as number).toString(16);
-
-        return super.morph();
     }
 }
 
 class ModXX extends IntegerModifier {
-    public morph(): string {
+    public preprocessOutput(): void {
         this.output = (this.arg as number).toString(16).toUpperCase();
-
-        return super.morph();
     }
 }
 
 class ModO extends IntegerModifier {
-    public morph(): string {
+    public preprocessOutput(): void {
         this.output = (this.arg as number).toString(8);
-
-        return super.morph();
     }
 }
 
@@ -235,14 +233,8 @@ class ModJ extends AbstractModifier {
             throw new Error("Mod j does not support precision");
     }
 
-    private toJSON(): void {
+    public preprocessOutput(): void {
         this.output = JSON.stringify(this.arg);
-    }
-
-    public morph(): string {
-        this.toJSON();
-
-        return super.morph();
     }
 }
 
