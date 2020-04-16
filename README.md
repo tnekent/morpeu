@@ -52,6 +52,7 @@ A specified precision results in an error.
 | Modifier | Description |
 | -------- | ----------- |
 | `i` | Modifies argument as is. The default when no modifier is specified and the argument is of integer type. |
+| `c` | Interprets the argument as a UTF-16 code unit, and transforms it to the corresponding character. |
 | `b` | Modifies argument to binary. |
 | `o` | Modifies argument to octal. |
 | `x` | Modifies argument to hexadecimal. Outputs letters in lowercase. |
