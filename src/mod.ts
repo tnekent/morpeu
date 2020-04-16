@@ -161,6 +161,14 @@ class ModO extends IntegerModifier {
     }
 }
 
+class ModC extends IntegerModifier {
+    public morph(): string {
+        this.output = String.fromCharCode(this.arg as number);
+
+        return super.morph();
+    }
+}
+
 class ModF extends FloatModifier {}
 
 class ModG extends FloatModifier {
@@ -266,6 +274,9 @@ export default class ModifierFactory {
                 break;
             case "g":
                 modclass = ModG;
+                break;
+            case "c":
+                modclass = ModC;
                 break;
             case "e":
                 modclass = ModE;

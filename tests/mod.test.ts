@@ -188,6 +188,13 @@ describe("Mod e", () => {
     });
 });
 
+describe("Mod c", () => {
+    test("evaluates to characters", () => {
+        expect(parseThenEval("{|c}", [65]))
+            .toBe("A");
+    });
+});
+
 describe("Mod E", () => {
     test("evaluates positive exponents", () => {
         expect(parseThenEval("{|E}", [123456789]))
