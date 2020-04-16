@@ -5,6 +5,24 @@ function parseThenEval(input: string, arglist: any[]): string {
     return new Evaluator(new Parser(input).parse(), arglist).eval();
 }
 
+describe("Align", () => {
+    test("add spaces to left when align is >", () => {
+        expect(parseThenEval("{|>3i}", [123])).toBe("   123");
+    });
+
+    test("add spaces to right when align is <", () => {
+        expect(parseThenEval("{|<3s}", ["Zap"])).toBe("Zap   ");
+    });
+
+    test("add spaces both sides when align is ^", () => {
+        expect(parseThenEval("{|^3f}", [1.25])).toBe("  1.250000 ");
+    });
+
+    test("treat align as < when no align specified", () => {
+        expect(parseThenEval("{|3s}", ["yep"])).toBe("yep   ");
+    });
+});
+
 describe("Mod s", () => {
     test("evaluates string", () => {
         expect(parseThenEval("{|s}", ["Hello"])).toBe("Hello");
