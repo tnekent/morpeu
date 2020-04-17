@@ -11,6 +11,11 @@ const morph = require("morpeu");
 morph("This is {.name}.", { name: "Morpeu" }); // => This is Morpeu.
 morph("Format {1} like a {0[like-what]}", { "like-what": "boss" }, "strings");
     // => Format strings like a boss
+
+const where = ["in", "home"];
+const what = "healthy";
+morph("Stay {0[0]}, stay {0[1]}, stay {1}.", where, what);
+// => Stay in, stay home, stay healthy.
 ```
 
 ## Format Rules Language
