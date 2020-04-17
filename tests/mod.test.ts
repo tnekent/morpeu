@@ -43,6 +43,27 @@ describe("Precision", () => {
     });
 });
 
+describe("Sign", () => {
+    test("errors on string type modifier", () => {
+        expect(() => parseThenEval("{|+s}", ["Hello"])).toThrow();
+    });
+    
+    test("prepend plus on positive or minus on negative when sign is +", () => {
+        expect(parseThenEval("{|+i}", [456])).toBe("+456");
+        expect(parseThenEval("{|+f}", [-2.786])).toMatch("-2.786");
+    });
+
+    test("prepend nothing on positive or minus sign on negative when sign is -", () => {
+        expect(parseThenEval("{|-i}", [456])).toBe("456");
+        expect(parseThenEval("{|-f}", [-2.786])).toMatch("-2.786");
+    });
+
+    test("prepend space on positive or minus sign on negative when sign is <space>", () => {
+        expect(parseThenEval("{| i}", [456])).toBe(" 456");
+        expect(parseThenEval("{| f}", [-2.786])).toMatch("-2.786");
+    });
+})
+
 describe("Mod s", () => {
     test("evaluates string", () => {
         expect(parseThenEval("{|s}", ["Hello"])).toBe("Hello");
