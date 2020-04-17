@@ -28,10 +28,6 @@ describe("Mod s", () => {
         expect(parseThenEval("{|s}", ["Hello"])).toBe("Hello");
     });
 
-    test("evaluates padding", () => {
-        expect(parseThenEval("{|5s}", ["Padded"])).toBe("Padded     ");
-    });
-
     test("applies precision", () => {
         expect(parseThenEval("{|.4s}", ["Stoppppp"])).toBe("Stop");
     });
@@ -53,10 +49,6 @@ describe("Mod s", () => {
 describe("Mod i", () => {
     test("evaluates integers", () => {
         expect(parseThenEval("{|i}", [20])).toBe("20");
-    });
-
-    test("evaluates padding", () => {
-        expect(parseThenEval("{|4i}", [4])).toBe("    4");
     });
 
     test("errors on specified precision", () => {
@@ -111,10 +103,6 @@ describe("Mod o", () => {
 describe("Mod f", () => {
     test("evaluates floats with default precision 6", () => {
         expect(parseThenEval("{|f}", [2.7])).toBe("2.700000");
-    });
-
-    test("evaluates padding", () => {
-        expect(parseThenEval("{|3f}", [3.765])).toBe("   3.765000");
     });
 
     test("applies precision", () => {
@@ -222,12 +210,6 @@ describe("Mod %", () => {
 });
 
 describe("Mod j", () => {
-    test("evaluates padding", () => {
-        const obj = { yes: "no" };
-
-        expect(parseThenEval("{|1j}", [obj])).toBe(`${JSON.stringify(obj)} `);
-    });
-
     test("errors on specified sign", () => {
         expect(() => parseThenEval("{|+j}", [{}])).toThrow();
     });
