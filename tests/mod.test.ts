@@ -23,6 +23,26 @@ describe("Align", () => {
     });
 });
 
+describe("Precision", () => {
+    test("truncates on string type modifiers", () => {
+        expect(parseThenEval("{|.2s}", ["Looooong"])).toBe("Lo");
+    });
+
+    test("errors on integer type modifiers", () => {
+        expect(() => parseThenEval("{|.3i}", [145])).toThrow();
+    });
+
+    describe("Float type modifiers", () => {
+        test("truncates and rounds down", () => {
+            expect(parseThenEval("{|.3f}", [1.025287])).toBe("1.025");
+        });
+
+        test("truncates and rounds down", () => {
+            expect(parseThenEval("{|.3f}", [1.025287])).toBe("1.025");
+        });
+    });
+});
+
 describe("Mod s", () => {
     test("evaluates string", () => {
         expect(parseThenEval("{|s}", ["Hello"])).toBe("Hello");
@@ -233,9 +253,6 @@ describe("Mod j", () => {
         expect(parseThenEval("{|j}", [2000])).toBe(JSON.stringify(2000));
     });
 
-    test("errors on specified precision", () => {
-        expect(() => parseThenEval("{|.2j}", [{ should: "error" }])).toThrow();
-    });
 });
 
 test("evaluates arg according to type when mod is unspecified", () => {
