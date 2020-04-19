@@ -85,19 +85,20 @@ describe("Mod s", () => {
 });
 
 describe("Integer type modifiers", () => {
+    test("errors on non-integer arguments", () => {
+        expect(() => {
+            parseThenEval("{|i}", ["int"]);
+            parseThenEval("{|b}", [3.5]);
+            parseThenEval("{|x}", [null]);
+            parseThenEval("{|o}", [String]);
+        });
+    });
+
     describe("Mod i", () => {
         test("morphs integer", () => {
             expect(parseThenEval("{|i}", [20])).toBe("20");
         });
 
-        test("errors on non-integer arguments", () => {
-            expect(() => {
-                parseThenEval("{|i}", ["int"]);
-                parseThenEval("{|i}", [3.5]);
-                parseThenEval("{|i}", [null]);
-                parseThenEval("{|i}", [String]);
-            });
-        });
     });
 
     describe("Mod b", () => {
@@ -127,6 +128,13 @@ describe("Integer type modifiers", () => {
 });
 
 describe("Float type modifiers", () => {
+    test("errors on non-float arguments", () => {
+        expect(() => {
+            parseThenEval("{|f}", ["float"]);
+            parseThenEval("{|%}", [undefined]);
+            parseThenEval("{|g}", [Number]);
+        });
+    });
     describe("Mod f", () => {
         test("expands float to 6th precision when unspecified", () => {
             expect(parseThenEval("{|f}", [2.7])).toBe("2.700000");
@@ -136,13 +144,6 @@ describe("Float type modifiers", () => {
             expect(parseThenEval("{|f}", [1000])).toBeDefined();
         });
 
-        test("errors on non-float arguments", () => {
-            expect(() => {
-                parseThenEval("{|f}", ["float"]);
-                parseThenEval("{|f}", [undefined]);
-                parseThenEval("{|f}", [Number]);
-            });
-        });
     });
 
     describe("Mod g", () => {
