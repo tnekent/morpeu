@@ -74,15 +74,6 @@ describe("Mod s", () => {
     test("evaluates string", () => {
         expect(parseThenEval("{|s}", ["Hello"])).toBe("Hello");
     });
-
-    test("applies precision", () => {
-        expect(parseThenEval("{|.4s}", ["Stoppppp"])).toBe("Stop");
-    });
-
-    test("errors on specified sign", () => {
-        expect(() => parseThenEval("{|+s}", ["Sign"])).toThrow();
-    });
-
     test("errors on non-string arguments", () => {
         expect(() => {
             parseThenEval("{|s}", [5]);
@@ -96,15 +87,6 @@ describe("Mod s", () => {
 describe("Mod i", () => {
     test("evaluates integers", () => {
         expect(parseThenEval("{|i}", [20])).toBe("20");
-    });
-
-    test("errors on specified precision", () => {
-        expect(() => parseThenEval("{|.1i}", [123456])).toThrow();
-    });
-
-    test("applies sign +", () => {
-        expect(parseThenEval("{|+i}", [-3])).toBe("-3");
-        expect(parseThenEval("{|+i}", [3])).toBe("+3");
     });
 
     test("errors on non-integer arguments", () => {
@@ -144,20 +126,6 @@ describe("Mod o", () => {
 describe("Mod f", () => {
     test("evaluates floats with default precision 6", () => {
         expect(parseThenEval("{|f}", [2.7])).toBe("2.700000");
-    });
-
-    test("applies precision", () => {
-        expect(parseThenEval("{|.2f}", [3.14159])).toBe("3.14");
-    });
-
-    test("evaluates sign -", () => {
-        expect(parseThenEval("{|-i}", [-3])).toBe("-3");
-        expect(parseThenEval("{|-i}", [3])).toBe("3");
-    });
-
-    test("applies sign <space>", () => {
-        expect(parseThenEval("{| i}", [-3])).toBe("-3");
-        expect(parseThenEval("{| i}", [3])).toBe(" 3");
     });
 
     test("accepts integers", () => {
@@ -251,10 +219,6 @@ describe("Mod %", () => {
 });
 
 describe("Mod j", () => {
-    test("errors on specified sign", () => {
-        expect(() => parseThenEval("{|+j}", [{}])).toThrow();
-    });
-
     test("evaluates an object", () => {
         const obj = { user: "Foo" };
 
