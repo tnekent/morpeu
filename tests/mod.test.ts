@@ -71,7 +71,7 @@ describe("Sign", () => {
 });
 
 describe("Mod s", () => {
-    test("evaluates string", () => {
+    test("morphs string", () => {
         expect(parseThenEval("{|s}", ["Hello"])).toBe("Hello");
     });
     test("errors on non-string arguments", () => {
@@ -85,7 +85,7 @@ describe("Mod s", () => {
 });
 
 describe("Mod i", () => {
-    test("evaluates integers", () => {
+    test("morphs integer", () => {
         expect(parseThenEval("{|i}", [20])).toBe("20");
     });
 
@@ -100,31 +100,31 @@ describe("Mod i", () => {
 });
 
 describe("Mod b", () => {
-    test("evaluates integer to binary", () => {
+    test("morphs integer to binary", () => {
         expect(parseThenEval("{|b}", [255])).toBe("11111111");
     });
 });
 
 describe("Mod x", () => {
-    test("evaluates integer to hexadecimal", () => {
+    test("morphs integer to hexadecimal", () => {
         expect(parseThenEval("{|x}", [939])).toBe("3ab");
     });
 });
 
 describe("Mod X", () => {
-    test("evaluates integer to hexadecimal", () => {
+    test("morphs integer to hexadecimal", () => {
         expect(parseThenEval("{|X}", [939])).toBe("3AB");
     });
 });
 
 describe("Mod o", () => {
-    test("evaluates integer to octal", () => {
+    test("morphs integer to octal", () => {
         expect(parseThenEval("{|o}", [1024])).toBe("2000");
     });
 });
 
 describe("Mod f", () => {
-    test("evaluates floats with default precision 6", () => {
+    test("expands float to 6th precision when unspecified", () => {
         expect(parseThenEval("{|f}", [2.7])).toBe("2.700000");
     });
 
@@ -142,74 +142,70 @@ describe("Mod f", () => {
 });
 
 describe("Mod g", () => {
-    test("evaluates to scientific notation when exponent of num < -4", () => {
+    test("expands float to scientific notation when exponent of num < -4", () => {
         expect(parseThenEval("{|g}", [0.000001])).toBe("1e-6");
     });
 
-    test("evaluates to fixed-notation when exponent of num = -4", () => {
+    test("expands float to fixed-notation when exponent of num = -4", () => {
         expect(parseThenEval("{|g}", [0.0001])).toBe("0.0001");
     });
 
-    test("evaluates to fixed-notation when exponent of num > -4 and num < precision", () => {
+    test("expands float to fixed-notation when exponent of num > -4 and num < precision", () => {
         expect(parseThenEval("{|.6g}", [1.23456])).toBe("1.23456");
         expect(parseThenEval("{|.6g}", [12.3456])).toBe("12.3456");
         expect(parseThenEval("{|.6g}", [123.456])).toBe("123.456");
         expect(parseThenEval("{|.6g}", [1234.56])).toBe("1234.56");
     });
 
-    test("evaluates to fixed-notation when exponent of num < precision", () => {
+    test("expands float to fixed-notation when exponent of num < precision", () => {
         expect(parseThenEval("{|.6g}", [100000])).toBe("100000");
     });
 
-    test("evaluates to scientific notation when exponent of num = precision", () => {
+    test("expands float to scientific notation when exponent of num = precision", () => {
         expect(parseThenEval("{|.6g}", [1000000])).toBe("1e+6");
     });
 
-    test("evaluates to scientific notation when exponent of num > precision", () => {
-        expect(parseThenEval("{|.6g}", [100000000])).toBe("1e+8");
-    });
-
-    test("evaluates to scientific notation when exponent of num > precision", () => {
+    test("expands float to scientific notation when exponent of num > precision", () => {
         expect(parseThenEval("{|.6g}", [100000000])).toBe("1e+8");
     });
 });
 
 describe("Mod e", () => {
-    test("evaluates positive exponents", () => {
+    test("expands float to positive exponential form", () => {
         expect(parseThenEval("{|e}", [123456789]))
             .toBe("1.234568e+8");
     });
 
-    test("evaluates negative exponents", () => {
+    test("expands float to negative exponential form", () => {
         expect(parseThenEval("{|e}", [0.12345678]))
             .toBe("1.234568e-1");
     });
 
-    test("applies precision", () => {
+    test("applies precision in exponential form", () => {
         expect(parseThenEval("{|.3e}", [1000000]))
             .toBe("1.000e+6");
     });
 });
 
 describe("Mod E", () => {
-    test("evaluates positive exponents", () => {
+    test("expands float to positive exponential form with E", () => {
         expect(parseThenEval("{|E}", [123456789]))
             .toBe("1.234568E+8");
     });
 
-    test("evaluates negative exponents", () => {
+    test("expands float to negative exponential form with E", () => {
         expect(parseThenEval("{|E}", [0.12345678]))
             .toBe("1.234568E-1");
     });
 
-    test("applies precision", () => {
+    test("applies precision in exponential form with E", () => {
         expect(parseThenEval("{|.3E}", [1000000]))
             .toBe("1.000E+6");
     });
 });
 
 describe("Mod %", () => {
-    test("evaluates to percentage with sign", () => {
+    test("morphs float to percentage", () => {
         expect(parseThenEval("{|%}", [0.05])).toBe("5.000000%");
     });
 
