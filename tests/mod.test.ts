@@ -47,7 +47,7 @@ describe("Sign", () => {
     test("errors on string type modifier", () => {
         expect(() => parseThenEval("{|+s}", ["Hello"])).toThrow();
     });
-    
+
     test("prepend plus on positive or minus on negative when sign is +", () => {
         expect(parseThenEval("{|+i}", [456])).toBe("+456");
         expect(parseThenEval("{|+f}", [-2.786])).toMatch("-2.786");
@@ -62,7 +62,13 @@ describe("Sign", () => {
         expect(parseThenEval("{| i}", [456])).toBe(" 456");
         expect(parseThenEval("{| f}", [-2.786])).toMatch("-2.786");
     });
-})
+
+    test("0 is the same regardless of sign", () => {
+        expect(parseThenEval("{|+i}", [0])).toBe("0");
+        expect(parseThenEval("{|-i}", [0])).toBe("0");
+        expect(parseThenEval("{| i}", [0])).toBe("0");
+    });
+});
 
 describe("Mod s", () => {
     test("evaluates string", () => {
@@ -99,12 +105,6 @@ describe("Mod i", () => {
     test("applies sign +", () => {
         expect(parseThenEval("{|+i}", [-3])).toBe("-3");
         expect(parseThenEval("{|+i}", [3])).toBe("+3");
-    });
-
-    test("0 is the same regardless of sign", () => {
-        expect(parseThenEval("{|+i}", [0])).toBe("0");
-        expect(parseThenEval("{|-i}", [0])).toBe("0");
-        expect(parseThenEval("{| i}", [0])).toBe("0");
     });
 
     test("errors on non-integer arguments", () => {
