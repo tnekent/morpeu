@@ -226,28 +226,6 @@ class ModPercent extends FloatModifier {
     }
 }
 
-class ModJ extends AbstractModifier {
-    public static checkType(): void {
-        // Since any JavaScript value is serializable to JSON,
-        // checking always passes.
-        return;
-    }
-
-    public applySign(): void {
-        if (typeof this.modrules.sign !== "undefined")
-            throw new Error("String type modifiers do not support signs");
-    }
-
-    public applyPrecision(): void {
-        if (typeof this.modrules.precision !== "undefined")
-            throw new Error("Mod j does not support precision");
-    }
-
-    public preprocessOutput(): void {
-        this.output = JSON.stringify(this.arg);
-    }
-}
-
 export default class ModifierFactory {
     // eslint-disable-next-line complexity, max-lines-per-function
     public static getModifier(modrules: ModRules, arg: any): Modifier {
@@ -289,9 +267,6 @@ export default class ModifierFactory {
             case "%":
                 modclass = ModPercent;
                 break;
-            case "j":
-                modclass = ModJ;
-                break;
             case undefined:
                 modclass = this.getDefaultModifier(arg);
                 break;
@@ -309,7 +284,6 @@ export default class ModifierFactory {
             case isString(arg): return ModS;
             case isInteger(arg): return ModI;
             case isFloat(arg): return ModG;
-            default: return ModJ;
         }
     }
 }
