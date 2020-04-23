@@ -30,6 +30,7 @@ Where:
    * `>`: Right aligns the output. Default for most types.
    * `<`: Left aligns the output. Default for numbers (integers and floats).
    * `^`: Center aligns the output. If specified `padding` is odd, the extra space is applied to the left.
+   * `=`: Center aligns the output, like `^`. The difference is it adds equal number of `padding` on both sides.
 * `sign`: Controls the placement of signs in numbers. Only valid for integer and float type modifiers.
    * `+`: Prepend a plus sign before positive numbers and a minus sign before negative numbers.
    * `-`: Don't prepend anything on positive numbers but prepend a minus sign before negative numbers. The default behavior.
