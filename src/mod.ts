@@ -284,6 +284,7 @@ export default class ModifierFactory {
             case isString(arg): return ModS;
             case isInteger(arg): return ModI;
             case isFloat(arg): return ModG;
+            default: return ModS;
         }
     }
 }
