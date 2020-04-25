@@ -4,18 +4,17 @@ Python has `format()`, C languages have `printf()`, Go has `fmt.Printf()`, and i
 
 Morpeu aims to bring exceptional string formatting to JavaScript. It is inspired by Python's `format()`, but with additional tweaks and features to make it powerful and customizable.
 
-## Example
+## Installation
+```bash
+$ npm install --save morpeu
+```
+Then require it in your module:
 ```js
 const morph = require("morpeu");
-
-morph("This is {.name}.", { name: "Morpeu" }); // => This is Morpeu.
-morph("Format {1} like a {0[like-what]}", { "like-what": "boss" }, "strings");
-    // => Format strings like a boss
-
-const where = ["in", "home"];
-const what = "healthy";
-morph("Stay {0[0]}, stay {0[1]}, stay {1}.", where, what);
-// => Stay in, stay home, stay healthy.
+```
+Or using ES6 modules:
+```js
+import morph from "morpeu";
 ```
 
 ## Format Rules Language
@@ -38,10 +37,11 @@ Where:
 * `padding`: A positive number for specifying the padding amount to be applied.
 * `precision`: A positive number for specifying the precision amount to be applied.
 * `mod`: See [Modifiers](#Modifiers).
+
 The delimiter pipe ("|") is similar to to the colon (:) of Python's.
 
 ## Modifiers
-Modifiers has four types according to the argument they accept and modify.
+Modifiers has three types according to the argument they accept and modify.
 
 1. String type
 
@@ -51,6 +51,16 @@ Precision indicates the number of the characters from the argument to include.
 | Modifier | Description |
 | -------- | ----------- |
 | `s` | Modifies strings as is. The default when no modifier is specified and the argument is of string type. |
+
+#### Example Usage
+```js
+morph("{|.4s}", "fooooo");
+// => "foo"
+
+const account = { name: "Foo", addr: "Bar St." };
+morph("Name: {.name}, Address: {.addr}", account);
+// => "Name: Foo, Address: Bar St."
+```
 
 2. Integer type
 
@@ -65,6 +75,16 @@ A specified precision results in an error.
 | `x` | Modifies argument to hexadecimal. Outputs letters in lowercase. |
 | `X` | Same as `x`, but output letters as uppercase.  |
 
+#### Example Usage
+```js
+morph("2 ** 3 = {}", Math.pow(2, 3));
+// => "2 ** 3 = 8"
+morph("Binary of 37: {|b}", 37);
+// => "Binary of 37: 100101"
+morph("Hex of 165: {|x}", 165);
+// => "Hex of 165: A5"
+```
+
 3. Float type
 
 Float types support both floats and integers (which are transformed into floats).
@@ -77,6 +97,62 @@ Precision indicates the number of decimal digits after the dot. Default precisio
 | `e` | Modifies float to scientific notation using _e_ as exponent indicator. |
 | `E` | Same as `e` but use _E_ as exponent indicator. |
 | `%` | Modifies float by multiplying by 100, transforming to fixed-point form, and appending a %. |
+    
+#### Example Usage
+```js
+morph("Pi: {|.4}", Math.PI);
+// => "Pi: 3.1416"
+morph("1kg = {}μg", 1 / 1000000);
+// => "1kg = 1e-6μg"
+morph("{|.2%} of 20 is 7", 7 / 20);
+// => "35.00% of 20 is 7"
+```
+
+## More In-depth Examples
+#### Specifying order of arguments
+```js
+morph("{}{}{}", "a", "b", "c");
+// => "abc"
+morph("{2}{1}{3}", "a", "b", "c");
+// => "bac"
+```
+
+#### Specifying properties of objects
+```js
+const account = { name: "Foo", addr: "Bar St." };
+morph("Name: {.name}, Address: {.addr}", account);
+// => "Name: Foo, Address: Bar St."
+
+// Use brackets for property names that have special characters
+const info = { "full-name": "John Dave" };
+morph("Fullname: {[full-name]}", info);
+// => "Fullname: John Dave"
+```
+
+#### Aligning
+```js
+morph("{|6>}", "left");
+// => "      left"
+morph("{|6<}", "right");
+// => "right      "
+morph("{|16^}", "center");
+// => "        center        "
+```
+
+#### Using own objects
+```js
+class A {
+   constructor(name) {
+     this.name = name;
+   }
+   toString() {
+     return "Name: " + this.name
+   }
+}
+const inst = new A("baz");
+morph("{}", inst);
+// => "Name: baz"
+```
 
 ## Disclaimer
 NodeJS already has a format function `format()` from module `util`, and if your aim is simple debugging, then `util.format` (used internally by `console.log`) can satisfy you in these circumstances. But when you want easy padding and the likes, then Morpeu is for you.
