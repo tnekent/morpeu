@@ -78,13 +78,32 @@ describe("Mod s", () => {
     test("morphs string", () => {
         expect(parseThenEval("{|s}", ["Hello"])).toBe("Hello");
     });
-    test("errors on non-string arguments", () => {
+
+    test("accepts null and undefined", () => {
+        expect(parseThenEval("{|s}", [null])).toBe("null");
+        expect(parseThenEval("{|s}", [undefined])).toBe("undefined");
+    });
+
+    test("accepts objects with toString method", () => {
+        const stringableObj = {
+            toString: () => "yap"
+        };
+
+        expect(parseThenEval("{|s}", [stringableObj])).toBe("yap");
+        expect(parseThenEval("{|s}", [{}])).toBe("[object Object]");
+    });
+
+    test("errors on objects with no toString method", () => {
+        const nullObj = Object.create(null);
         expect(() => {
-            parseThenEval("{|s}", [5]);
-            parseThenEval("{|s}", [1.2]);
-            parseThenEval("{|s}", [null]);
-            parseThenEval("{|s}", [Math]);
-        });
+            parseThenEval("{|s}", [nullObj]);
+        }).toThrow();
+
+        const normalObj = {};
+        normalObj.toString = undefined;
+        expect(() => {
+            parseThenEval("{|s}", [normalObj]);
+        }).toThrow();
     });
 });
 
