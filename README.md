@@ -45,7 +45,8 @@ Modifiers has four types according to the argument they accept and modify.
 
 1. String type
 
-Precision indicates the length of the string.
+String types additionally support null and undefined values, and objects with `toString ` method.
+Precision indicates the number of the characters from the argument to include.
 
 | Modifier | Description |
 | -------- | ----------- |
@@ -76,14 +77,6 @@ Precision indicates the number of decimal digits after the dot. Default precisio
 | `e` | Modifies float to scientific notation using _e_ as exponent indicator. |
 | `E` | Same as `e` but use _E_ as exponent indicator. |
 | `%` | Modifies float by multiplying by 100, transforming to fixed-point form, and appending a %. |
-
-4. Any type
-
-Any type accepts any valid JavaScript value. A specified precision results in a error.
-
-| Modifier | Description |
-| -------- | ----------- |
-| `j` | Modifies argument to JSON. |
 
 ## Disclaimer
 NodeJS already has a format function `format()` from module `util`, and if your aim is simple debugging, then `util.format` (used internally by `console.log`) can satisfy you in these circumstances. But when you want easy padding and the likes, then Morpeu is for you.
