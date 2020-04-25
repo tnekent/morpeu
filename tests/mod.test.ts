@@ -78,13 +78,32 @@ describe("Mod s", () => {
     test("morphs string", () => {
         expect(parseThenEval("{|s}", ["Hello"])).toBe("Hello");
     });
-    test("errors on non-string arguments", () => {
+
+    test("accepts null and undefined", () => {
+        expect(parseThenEval("{|s}", [null])).toBe("null");
+        expect(parseThenEval("{|s}", [undefined])).toBe("undefined");
+    });
+
+    test("accepts objects with toString method", () => {
+        const stringableObj = {
+            toString: () => "yap"
+        };
+
+        expect(parseThenEval("{|s}", [stringableObj])).toBe("yap");
+        expect(parseThenEval("{|s}", [{}])).toBe("[object Object]");
+    });
+
+    test("errors on objects with no toString method", () => {
+        const nullObj = Object.create(null);
         expect(() => {
-            parseThenEval("{|s}", [5]);
-            parseThenEval("{|s}", [1.2]);
-            parseThenEval("{|s}", [null]);
-            parseThenEval("{|s}", [Math]);
-        });
+            parseThenEval("{|s}", [nullObj]);
+        }).toThrow();
+
+        const normalObj = {};
+        normalObj.toString = undefined;
+        expect(() => {
+            parseThenEval("{|s}", [normalObj]);
+        }).toThrow();
     });
 });
 
@@ -227,28 +246,6 @@ describe("Float type modifiers", () => {
             expect(parseThenEval("{|.2%}", [1.05])).toBe("105.00%");
         });
     });
-});
-
-describe("Mod j", () => {
-    test("evaluates an object", () => {
-        const obj = { user: "Foo" };
-
-        expect(parseThenEval("{|j}", [obj])).toBe(JSON.stringify(obj));
-    });
-
-    test("evaluates an array", () => {
-        const arr = [1, "2", { i: 3 }];
-
-        expect(parseThenEval("{|j}", [arr])).toBe(JSON.stringify(arr));
-    });
-
-    test("evaluates primitive values", () => {
-        expect(parseThenEval("{|j}", [true])).toBe(JSON.stringify(true));
-        expect(parseThenEval("{|j}", ["bar"])).toBe(JSON.stringify("bar"));
-        expect(parseThenEval("{|j}", [3.05])).toBe(JSON.stringify(3.05));
-        expect(parseThenEval("{|j}", [2000])).toBe(JSON.stringify(2000));
-    });
-
 });
 
 test("evaluates arg according to type when mod is unspecified", () => {

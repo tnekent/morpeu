@@ -9,7 +9,11 @@ interface StaticModifier {
     checkType(arg: any, mod: string): void;
 }
 
-const isString = (arg: any): boolean => typeof arg === "string",
+const isStringable = (arg: any): boolean =>
+        typeof arg === "string" ||
+        arg === null ||
+        arg === undefined ||
+        typeof arg.toString === "function",
     { isInteger } = Number,
     isFloat = (arg: any): boolean => typeof arg === "number" && !Number.isInteger(arg);
 
@@ -69,7 +73,7 @@ abstract class AbstractModifier implements Modifier {
 
 abstract class StringModifier extends AbstractModifier {
     public static checkType(arg: any, mod: string): void {
-        if (!isString(arg))
+        if (!isStringable(arg))
             throw new Error(`Mod ${mod} only supports string types`);
     }
 
@@ -226,28 +230,6 @@ class ModPercent extends FloatModifier {
     }
 }
 
-class ModJ extends AbstractModifier {
-    public static checkType(): void {
-        // Since any JavaScript value is serializable to JSON,
-        // checking always passes.
-        return;
-    }
-
-    public applySign(): void {
-        if (typeof this.modrules.sign !== "undefined")
-            throw new Error("String type modifiers do not support signs");
-    }
-
-    public applyPrecision(): void {
-        if (typeof this.modrules.precision !== "undefined")
-            throw new Error("Mod j does not support precision");
-    }
-
-    public preprocessOutput(): void {
-        this.output = JSON.stringify(this.arg);
-    }
-}
-
 export default class ModifierFactory {
     // eslint-disable-next-line complexity, max-lines-per-function
     public static getModifier(modrules: ModRules, arg: any): Modifier {
@@ -289,9 +271,6 @@ export default class ModifierFactory {
             case "%":
                 modclass = ModPercent;
                 break;
-            case "j":
-                modclass = ModJ;
-                break;
             case undefined:
                 modclass = this.getDefaultModifier(arg);
                 break;
@@ -306,10 +285,10 @@ export default class ModifierFactory {
 
     private static getDefaultModifier(arg: any): StaticModifier {
         switch (true) {
-            case isString(arg): return ModS;
             case isInteger(arg): return ModI;
             case isFloat(arg): return ModG;
-            default: return ModJ;
+            case isStringable(arg): return ModS;
         }
+        throw new Error("Unsupported type: " + require("util").format(arg));
     }
 }
