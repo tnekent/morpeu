@@ -46,9 +46,7 @@ abstract class AbstractModifier implements Modifier {
                     this.output = `${" ".repeat(left)}${this.output}${" ".repeat(right)}`;
                 }
                     break;
-                case "=":
-                    const pad = " ".repeat(padding);
-                    this.output = `${pad}${this.output}${pad}`;
+
             }
         }
     }

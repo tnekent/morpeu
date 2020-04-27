@@ -36,7 +36,7 @@ export interface ModRules {
     mod: string;
 }
 
-type ModAlignSymbol = "<" | ">" | "^" | "="
+type ModAlignSymbol = "<" | ">" | "^"
 type ModAlignSign = "+" | "-" | " "
 
 export type Field = FormatField | ConstField;
@@ -162,7 +162,7 @@ class ModRulesParser extends AbstractParser<ModRules> {
     }
 
     private parseAlign(): ModAlignSymbol {
-        return this.matchAndUpdate(/^[<>^=]/) as ModAlignSymbol;
+        return this.matchAndUpdate(/^[<>^]/) as ModAlignSymbol;
     }
 
     private parseSign(): ModAlignSign {

@@ -18,10 +18,6 @@ describe("Align", () => {
         expect(parseThenEval("{|^3f}", [1.25])).toBe("  1.250000 ");
     });
 
-    test("add equal spaces both sides when align is ^", () => {
-        expect(parseThenEval("{|=3b}", [30])).toBe("   11110   ");
-    });
-
     test("treat align as < when no align specified", () => {
         expect(parseThenEval("{|3s}", ["yep"])).toBe("yep   ");
     });
