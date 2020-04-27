@@ -23,6 +23,20 @@ describe("Align", () => {
     });
 });
 
+describe("Padchar", () => {
+    test("put the right number of padchar for >", () => {
+        expect(parseThenEval("{|->5}", ["right"])).toBe("-----right");
+    });
+
+    test("put the right number of padchar for <", () => {
+        expect(parseThenEval("{|-<5}", ["left"])).toBe("left-----");
+    });
+
+    test("put the right number of padchar for ^", () => {
+        expect(parseThenEval("{|-^5}", ["middle"])).toBe("---middle--");
+    });
+});
+
 describe("Precision", () => {
     test("truncates on string type modifiers", () => {
         expect(parseThenEval("{|.2s}", ["Looooong"])).toBe("Lo");
