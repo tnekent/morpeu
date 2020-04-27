@@ -135,8 +135,8 @@ morph("{|6>}", "left");
 // => "      left"
 morph("{|6<}", "right");
 // => "right      "
-morph("{|16^}", "center");
-// => "        center        "
+morph("{|*16^}", "center");
+// => "********center********"
 ```
 
 #### Using own objects
