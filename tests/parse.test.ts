@@ -111,6 +111,19 @@ describe("Format type field", () => {
             expect(padding).toBe(5);
         });
 
+        test("parses padchar when align symbol appears", () => {
+            const iter = new Parser("{|*>}").parse(),
+                { padchar } = iter.next().value.value.modrules;
+
+            expect(padchar).toBe("*");
+        });
+
+        test("errors in parsing padchar when align symbol is none", () => {
+            // Character * is not a modifier or an argument symbol
+            // so the only purpose of it here is to be `padchar`
+            expect(() => { new Parser("{|*}").parse().next(); }).toThrow();
+        });
+
         test("parses precision", () => {
             const iter = new Parser("{|.3}").parse(),
                 { precision } = iter.next().value.value.modrules;

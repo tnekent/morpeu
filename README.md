@@ -19,12 +19,13 @@ import morph from "morpeu";
 
 ## Format Rules Language
 ```
-"{" [arg_index] ( "[" bracket_prop "]" | "." dot_prop )* "|" [align] [sign] [padding] ["." precision] [mod] "}"
+"{" [arg_index] ( "[" bracket_prop "]" | "." dot_prop )* "|" [[padchar]align] [sign] [padding] ["." precision] [mod] "}"
 ```
 Where:
 * `arg_index`: A number specifying the index of the argument in the argument list.
 * `bracket_prop`: A string of characters not including "]" to specify a property.
 * `dot_prop`: A string of a valid JavaScript identifier to specify a property.
+* `padchar`: A character to insert when padding is being added. `align` must follow immediately to recognize it. Defaults to a space.
 * `align`: Controls the alignment of the output when padding is specified.
    * `>`: Right aligns the output. Default for most types.
    * `<`: Left aligns the output. Default for numbers (integers and floats).

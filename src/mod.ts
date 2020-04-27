@@ -30,20 +30,20 @@ abstract class AbstractModifier implements Modifier {
 
     public applyPadding(): void {
         if (this.modrules.padding !== 0) {
-            const { padding, align = "<" } = this.modrules;
+            const { padchar = " ", padding, align = "<" } = this.modrules;
 
             switch (align) {
                 case "<":
-                    this.output = `${this.output}${" ".repeat(padding)}`;
+                    this.output = `${this.output}${padchar.repeat(padding)}`;
                     break;
 
                 case ">":
-                    this.output = `${" ".repeat(padding)}${this.output}`;
+                    this.output = `${padchar.repeat(padding)}${this.output}`;
                     break;
 
                 case "^": {
                     const left = Math.ceil(padding / 2), right = padding - left;
-                    this.output = `${" ".repeat(left)}${this.output}${" ".repeat(right)}`;
+                    this.output = `${padchar.repeat(left)}${this.output}${padchar.repeat(right)}`;
                 }
                     break;
 

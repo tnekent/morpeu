@@ -29,6 +29,7 @@ export interface ArgRules {
 }
 
 export interface ModRules {
+    padchar: string;
     align: ModAlignSymbol;
     sign: ModAlignSign;
     padding: number;
@@ -152,13 +153,18 @@ class ArgRulesParser extends AbstractParser<ArgRules> {
 
 class ModRulesParser extends AbstractParser<ModRules> {
     public parse(): ModRules {
-        const align = this.parseAlign(),
+        const padchar = this.parsePadChar(),
+            align = this.parseAlign(),
             sign = this.parseSign(),
             padding = this.parsePadding(),
             precision = this.parsePrecision(),
             mod = this.parseMod();
 
-        return { padding, precision, mod, align, sign };
+        return { padchar, padding, precision, mod, align, sign };
+    }
+
+    parsePadChar(): string {
+        return this.matchAndUpdate(/^.(?=[<>^])/);
     }
 
     private parseAlign(): ModAlignSymbol {
