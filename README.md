@@ -1,3 +1,8 @@
+[![Build Status](https://circleci.com/gh/tnekent/morpeu.svg?style=svg)](https://circleci.com/gh/tnekent/morpeu)
+[![License](https://img.shields.io/github/license/tnekent/morpeu?color=blue)](LICENSE)
+[![NPM version](https://img.shields.io/npm/v/morpeu)](https://www.npmjs.com/package/morpeu)
+[![Dependencies](https://img.shields.io/librariesio/release/npm/morpeu)](package.json)
+
 # Morpeu
 ## Format strings like you're the boss
 Python has `format()`, C languages have `printf()`, Go has `fmt.Printf()`, and it's time for JavaScript to join in too.
