@@ -1,7 +1,11 @@
 import Parser from "../src/parse";
 
+function parse(input: string) {
+    return new Parser(input).parse();
+}
+
 test("parses and returns a field", () => {
-    const iter = new Parser("Hello World!").parse().next();
+    const iter = parse("Hello World!").next();
     expect(iter.done).toBeFalsy();
     expect(iter.value).toMatchObject({
         type: expect.any(String),
@@ -11,7 +15,7 @@ test("parses and returns a field", () => {
 
 describe("Const field", () => {
     test("parses const field of non-brace characters", () => {
-        const iter = new Parser("FooBar").parse(),
+        const iter = parse("FooBar"),
             { value: field } = iter.next();
 
         expect(field).toMatchObject({
@@ -22,7 +26,7 @@ describe("Const field", () => {
     });
 
     test("parses const field of literal braces", () => {
-        const iter = new Parser("}}{{").parse();
+        const iter = parse("}}{{");
         let { value: field } = iter.next();
         expect(field).toMatchObject({
             type: "const",
@@ -39,7 +43,7 @@ describe("Const field", () => {
 
 describe("Format type field", () => {
     test("parses empty format field", () => {
-        const iter = new Parser("{}").parse(),
+        const iter = parse("{}"),
             { value: field } = iter.next();
 
         expect(field.type).toBe("format");
@@ -49,7 +53,7 @@ describe("Format type field", () => {
     });
 
     test("parses format field with only delimiter", () => {
-        const iter = new Parser("{|}").parse(),
+        const iter = parse("{|}"),
             { value: field } = iter.next();
 
         expect(field.type).toBe("format");
@@ -60,21 +64,21 @@ describe("Format type field", () => {
 
     describe("Argrules", () => {
         test("parses index", () => {
-            const iter = new Parser("{1}").parse(),
+            const iter = parse("{1}"),
                 { index } = iter.next().value.value.argrules;
 
             expect(index).toBe(1);
         });
 
         test("parses index as undefined when unspecified", () => {
-            const iter = new Parser("{.a.b|}").parse(),
+            const iter = parse("{.a.b|}"),
                 { index } = iter.next().value.value.argrules;
 
             expect(index).toBeUndefined();
         });
 
         test("parses props", () => {
-            const iter = new Parser("{.a[b][c].d}").parse(),
+            const iter = parse("{.a[b][c].d}"),
                 { props } = iter.next().value.value.argrules;
 
             expect(props).toHaveLength(4);
@@ -86,33 +90,33 @@ describe("Format type field", () => {
 
         test("errors parsing props when nothing is inside brackets", () => {
             expect(() =>{
-                new Parser("{[]}").parse().next();
+                parse("{[]}").next();
             }).toThrow();
         });
 
         test("errors parsing props when not a string follows a dot", () => {
             expect(() =>{
-                new Parser("{.}").parse().next();
+                parse("{.}").next();
             }).toThrow();
         });
 
         test("errors parsing props when bracket is not properly closed", () => {
             expect(() =>{
-                new Parser("{[|}").parse().next();
+                parse("{[|}").next();
             }).toThrow();
         });
     });
 
     describe("Modrules", () => {
         test("parses padding", () => {
-            const iter = new Parser("{|5}").parse(),
+            const iter = parse("{|5}"),
                 { padding } = iter.next().value.value.modrules;
 
             expect(padding).toBe(5);
         });
 
         test("parses padchar when align symbol appears", () => {
-            const iter = new Parser("{|*>}").parse(),
+            const iter = parse("{|*>}"),
                 { padchar } = iter.next().value.value.modrules;
 
             expect(padchar).toBe("*");
@@ -121,113 +125,46 @@ describe("Format type field", () => {
         test("errors in parsing padchar when align symbol is none", () => {
             // Character * is not a modifier or an argument symbol
             // so the only purpose of it here is to be `padchar`
-            expect(() => { new Parser("{|*}").parse().next(); }).toThrow();
+            expect(() => { parse("{|*}").next(); }).toThrow();
         });
 
         test("parses precision", () => {
-            const iter = new Parser("{|.3}").parse(),
+            const iter = parse("{|.3}"),
                 { precision } = iter.next().value.value.modrules;
 
             expect(precision).toBe(3);
         });
 
-        test("parses align", () => {
-            let iter = new Parser("{|>}").parse(),
+        test.each([">", "^", "<"])("parses align parameter '%s'", (alignParam) => {
+            const iter = parse(`{|${alignParam}}`),
                 { align } = iter.next().value.value.modrules;
 
-            expect(align).toBe(">");
-
-            iter = new Parser("{|^}").parse();
-            align = iter.next().value.value.modrules.align;
-
-            expect(align).toBe("^");
-
-            iter = new Parser("{|<}").parse();
-            align = iter.next().value.value.modrules.align;
-
-            expect(align).toBe("<");
+            expect(align).toBe(alignParam);
         });
 
-        test("parses sign", () => {
-            let iter = new Parser("{|+}").parse(),
+        test.each(["+", "-", " "])("parses sign parameter", (signParam) => {
+            const iter = parse(`{|${signParam}}`),
                 { sign } = iter.next().value.value.modrules;
 
-            expect(sign).toBe("+");
-
-            iter = new Parser("{|-}").parse();
-            sign = iter.next().value.value.modrules.sign;
-
-            expect(sign).toBe("-");
-
-            iter = new Parser("{| }").parse();
-            sign = iter.next().value.value.modrules.sign;
-
-            expect(sign).toBe(" ");
+            expect(sign).toBe(signParam);
         });
 
         test("parses mod", () => {
-            const iter = new Parser("{|f}").parse(),
+            const iter = parse("{|f}"),
                 { mod } = iter.next().value.value.modrules;
 
             expect(mod).toBe("f");
         });
         test("errors parsing precision when not a number follows dot", () => {
             expect(() =>{
-                new Parser("{|.f}").parse().next();
+                parse("{|.f}").next();
             }).toThrow();
         });
     });
 
     test("errors parsing format field when brace not properly closed", () => {
         expect(() =>{
-            new Parser("{2.foo|f").parse().next();
+            parse("{2.foo|f").next();
         }).toThrow();
     });
-});
-
-test("parses multiple fields", () => {
-    const iter = new Parser("A {.foo|s} is {0|<2.0}").parse(),
-        f1 = iter.next().value;
-
-    expect(f1).toMatchObject({
-        type: "const",
-        value: "A "
-    });
-
-    const f2 = iter.next().value;
-    expect(f2.type).toBe("format");
-    expect(f2.value).toMatchObject({
-        argrules: {
-            index: undefined,
-            props: ["foo"]
-        },
-        modrules: {
-            align: undefined,
-            padding: undefined,
-            precision: undefined,
-            mod: "s"
-        }
-    });
-
-    const f3 = iter.next().value;
-    expect(f3).toMatchObject({
-        type: "const",
-        value: " is "
-    });
-
-    const f4 = iter.next().value;
-    expect(f4.type).toBe("format");
-    expect(f4.value).toMatchObject({
-        argrules: {
-            index: 0,
-            props: []
-        },
-        modrules: {
-            align: "<",
-            padding: 2,
-            precision: 0,
-            mod: undefined
-        }
-    });
-    expect(iter.next().done).toBeTruthy();
 });
