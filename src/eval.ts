@@ -1,11 +1,11 @@
 import { ParseIter, FormatRules, ArgRules, MorphismRules } from "./parse";
 import MorphismFactory from "./mod";
 
-interface Evaluator<T> {
-    eval(): T;
+interface Evaluator {
+    eval(): string;
 }
 
-class ConstFieldEvaluator implements Evaluator<string> {
+class ConstFieldEvaluator implements Evaluator {
     public value: string;
     public constructor(value: string) {
         this.value = value;
@@ -16,7 +16,7 @@ class ConstFieldEvaluator implements Evaluator<string> {
     }
 }
 
-class FormatFieldEvaluator implements Evaluator<string> {
+class FormatFieldEvaluator implements Evaluator {
     public argRules: ArgRules;
     public morphRules: MorphismRules;
     public arglist: any[];
@@ -65,7 +65,7 @@ class FormatFieldEvaluator implements Evaluator<string> {
     public static manuallyIndexed = false;
 }
 
-export default class MainEvaluator implements Evaluator<string> {
+export default class MainEvaluator implements Evaluator {
     private iter: ParseIter;
     private arglist: any[];
 
