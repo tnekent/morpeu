@@ -1,12 +1,12 @@
-import { ModRules } from "./parse";
+import { MorphismRules } from "./parse";
 
-export interface Modifier {
+export interface Morphism {
     morph(): string;
 }
 
-interface StaticModifier {
-    new (modrules: ModRules, arg: any): Modifier;
-    checkType(arg: any, mod: string): void;
+interface StaticMorphism {
+    new (morphRules: MorphismRules, arg: any): Morphism;
+    checkType(arg: any, morphism: string): void;
 }
 
 const isStringable = (arg: any): boolean =>
@@ -17,33 +17,33 @@ const isStringable = (arg: any): boolean =>
     { isInteger } = Number,
     isFloat = (arg: any): boolean => typeof arg === "number" && !Number.isInteger(arg);
 
-abstract class AbstractModifier implements Modifier {
-    protected modrules: ModRules;
+abstract class AbstractMorphism implements Morphism {
+    protected morphRules: MorphismRules;
     protected arg: any;
     protected output: string;
 
-    public constructor(modrules: ModRules, arg: any) {
-        this.modrules = modrules;
+    public constructor(morphRules: MorphismRules, arg: any) {
+        this.morphRules = morphRules;
         this.arg = arg;
         this.output = String(arg);
     }
 
     public applyPadding(): void {
-        if (this.modrules.padding !== 0) {
-            const { padchar = " ", padding, align = "<" } = this.modrules;
+        if (this.morphRules.padding !== 0) {
+            const { padfill = " ", padding, align = "<" } = this.morphRules;
 
             switch (align) {
                 case "<":
-                    this.output = `${this.output}${padchar.repeat(padding)}`;
+                    this.output = `${this.output}${padfill.repeat(padding)}`;
                     break;
 
                 case ">":
-                    this.output = `${padchar.repeat(padding)}${this.output}`;
+                    this.output = `${padfill.repeat(padding)}${this.output}`;
                     break;
 
                 case "^": {
                     const left = Math.ceil(padding / 2), right = padding - left;
-                    this.output = `${padchar.repeat(left)}${this.output}${padchar.repeat(right)}`;
+                    this.output = `${padfill.repeat(left)}${this.output}${padfill.repeat(right)}`;
                 }
                     break;
 
@@ -69,33 +69,33 @@ abstract class AbstractModifier implements Modifier {
     }
 }
 
-abstract class StringModifier extends AbstractModifier {
+abstract class StringMorphism extends AbstractMorphism {
     public static checkType(arg: any, mod: string): void {
         if (!isStringable(arg))
             throw new Error(`Mod ${mod} only supports string types`);
     }
 
     public applyPrecision(): void {
-        if (typeof this.modrules.precision !== "undefined")
-            this.output = (this.arg as string).slice(0, this.modrules.precision);
+        if (typeof this.morphRules.precision !== "undefined")
+            this.output = (this.arg as string).slice(0, this.morphRules.precision);
     }
 
     public applySign(): void {
-        if (typeof this.modrules.sign !== "undefined")
+        if (typeof this.morphRules.sign !== "undefined")
             throw new Error("String type modifiers do not support signs");
     }
 }
 
-abstract class NumericModifier extends AbstractModifier {
+abstract class NumericMorphism extends AbstractMorphism {
     public applyPadding(): void {
         // Default align symbol for numbers is ">"
-        if (typeof this.modrules.align === "undefined")
-            this.modrules.align = ">";
+        if (typeof this.morphRules.align === "undefined")
+            this.morphRules.align = ">";
         super.applyPadding();
     }
 
     public applySign(): void {
-        const { sign = "-" } = this.modrules;
+        const { sign = "-" } = this.morphRules;
 
         switch (sign) {
             // Negative numbers are casted with signs so no neednto add "-".
@@ -112,60 +112,60 @@ abstract class NumericModifier extends AbstractModifier {
     }
 }
 
-abstract class IntegerModifier extends NumericModifier {
+abstract class IntegerMorphism extends NumericMorphism {
     public static checkType(arg: any, mod: string): void {
         if (!isInteger(arg))
             throw new Error(`Mod ${mod} only supports integer types`);
     }
 
     public applyPrecision(): void {
-        if (typeof this.modrules.precision !== "undefined")
+        if (typeof this.morphRules.precision !== "undefined")
             throw new Error("Integer type modifiers do not support precision");
     }
 }
 
-abstract class FloatModifier extends NumericModifier {
+abstract class FloatMorphism extends NumericMorphism {
     public static checkType(arg: any, mod: string): void {
         if (typeof arg !== "number")
             throw new Error(`Mod ${mod} only supports float types`);
     }
 
     public applyPrecision(): void {
-        const { precision = 6 } = this.modrules;
+        const { precision = 6 } = this.morphRules;
 
         this.output = (this.arg as number).toFixed(precision);
     }
 }
 
-class ModS extends StringModifier {}
+class ModS extends StringMorphism {}
 
-class ModI extends IntegerModifier {}
+class ModI extends IntegerMorphism {}
 
-class ModB extends IntegerModifier {
+class ModB extends IntegerMorphism {
     public preprocessOutput(): void {
         this.output = (this.arg as number).toString(2);
     }
 }
 
-class ModX extends IntegerModifier {
+class ModX extends IntegerMorphism {
     public preprocessOutput(): void {
         this.output = (this.arg as number).toString(16);
     }
 }
 
-class ModXX extends IntegerModifier {
+class ModXX extends IntegerMorphism {
     public preprocessOutput(): void {
         this.output = (this.arg as number).toString(16).toUpperCase();
     }
 }
 
-class ModO extends IntegerModifier {
+class ModO extends IntegerMorphism {
     public preprocessOutput(): void {
         this.output = (this.arg as number).toString(8);
     }
 }
 
-class ModC extends IntegerModifier {
+class ModC extends IntegerMorphism {
     public morph(): string {
         this.output = String.fromCharCode(this.arg as number);
 
@@ -173,11 +173,11 @@ class ModC extends IntegerModifier {
     }
 }
 
-class ModF extends FloatModifier {}
+class ModF extends FloatMorphism {}
 
-class ModG extends FloatModifier {
+class ModG extends FloatMorphism {
     public applyPrecision(): void {
-        const { precision = 6 } = this.modrules,
+        const { precision = 6 } = this.morphRules,
             exponentForm = (this.arg as number).toExponential(precision),
             exponentN = parseInt(/[+-]\d+$/.exec(exponentForm)[0]);
 
@@ -203,21 +203,21 @@ class ModG extends FloatModifier {
     }
 }
 
-class ModE extends FloatModifier {
+class ModE extends FloatMorphism {
     public applyPrecision(): void {
-        const { precision = 6 } = this.modrules;
+        const { precision = 6 } = this.morphRules;
         this.output = (this.arg as number).toExponential(precision);
     }
 }
 
-class ModEE extends FloatModifier {
+class ModEE extends FloatMorphism {
     public applyPrecision(): void {
-        const { precision = 6 } = this.modrules;
+        const { precision = 6 } = this.morphRules;
         this.output = (this.arg as number).toExponential(precision).toUpperCase();
     }
 }
 
-class ModPercent extends FloatModifier {
+class ModPercent extends FloatMorphism {
     public morph(): string {
         this.arg *= 100;
         this.applyPrecision();
@@ -228,11 +228,11 @@ class ModPercent extends FloatModifier {
     }
 }
 
-export default class ModifierFactory {
+export default class MorphismFactory {
     // eslint-disable-next-line complexity, max-lines-per-function
-    public static getModifier(modrules: ModRules, arg: any): Modifier {
-        let modclass: StaticModifier;
-        switch (modrules.mod) {
+    public static getMorphism(morphRules: MorphismRules, arg: any): Morphism {
+        let modclass: StaticMorphism;
+        switch (morphRules.morphism) {
             case "s":
                 modclass = ModS;
                 break;
@@ -270,18 +270,18 @@ export default class ModifierFactory {
                 modclass = ModPercent;
                 break;
             case undefined:
-                modclass = this.getDefaultModifier(arg);
+                modclass = this.getDefaultMorphism(arg);
                 break;
-            default: throw new Error(`Mod ${modrules.mod} is not implemented`);
+            default: throw new Error(`Mod ${morphRules.morphism} is not implemented`);
         }
-        // Because we already check when we run this.getDefaultModifier(arg);
-        if (typeof modrules.mod !== "undefined")
-            modclass.checkType(arg, modrules.mod);
+        // Because we already check when we run this.getDefaultMorphism(arg);
+        if (typeof morphRules.morphism !== "undefined")
+            modclass.checkType(arg, morphRules.morphism);
 
-        return new modclass(modrules, arg);
+        return new modclass(morphRules, arg);
     }
 
-    private static getDefaultModifier(arg: any): StaticModifier {
+    private static getDefaultMorphism(arg: any): StaticMorphism {
         switch (true) {
             case isInteger(arg): return ModI;
             case isFloat(arg): return ModG;

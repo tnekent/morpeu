@@ -19,8 +19,8 @@ interface FormatField {
 }
 
 export interface FormatRules {
-    argrules: ArgRules;
-    modrules: ModRules;
+    argRules: ArgRules;
+    morphRules: MorphismRules;
 }
 
 export interface ArgRules {
@@ -28,17 +28,17 @@ export interface ArgRules {
     props: string[];
 }
 
-export interface ModRules {
-    padchar: string;
-    align: ModAlignSymbol;
-    sign: ModAlignSign;
+export interface MorphismRules {
+    padfill: string;
+    align: MorphAlignRule;
+    sign: MorphSignRule;
     padding: number;
     precision: number;
-    mod: string;
+    morphism: string;
 }
 
-type ModAlignSymbol = "<" | ">" | "^"
-type ModAlignSign = "+" | "-" | " "
+type MorphAlignRule = "<" | ">" | "^"
+type MorphSignRule = "+" | "-" | " "
 
 export type Field = FormatField | ConstField;
 export type ParseIter = Generator<Field>;
@@ -151,28 +151,28 @@ class ArgRulesParser extends AbstractParser<ArgRules> {
     }
 }
 
-class ModRulesParser extends AbstractParser<ModRules> {
-    public parse(): ModRules {
-        const padchar = this.parsePadChar(),
+class ModRulesParser extends AbstractParser<MorphismRules> {
+    public parse(): MorphismRules {
+        const padfill = this.parsePadfill(),
             align = this.parseAlign(),
             sign = this.parseSign(),
             padding = this.parsePadding(),
             precision = this.parsePrecision(),
-            mod = this.parseMod();
+            morphism = this.parseMod();
 
-        return { padchar, padding, precision, mod, align, sign };
+        return { padfill, padding, precision, morphism, align, sign };
     }
 
-    parsePadChar(): string {
+    parsePadfill(): string {
         return this.matchAndUpdate(/^.(?=[<>^])/);
     }
 
-    private parseAlign(): ModAlignSymbol {
-        return this.matchAndUpdate(/^[<>^]/) as ModAlignSymbol;
+    private parseAlign(): MorphAlignRule {
+        return this.matchAndUpdate(/^[<>^]/) as MorphAlignRule;
     }
 
-    private parseSign(): ModAlignSign {
-        return this.matchAndUpdate(/^[-+ ]/) as ModAlignSign;
+    private parseSign(): MorphSignRule {
+        return this.matchAndUpdate(/^[-+ ]/) as MorphSignRule;
     }
 
     private parsePadding(): number {
@@ -203,14 +203,14 @@ class ModRulesParser extends AbstractParser<ModRules> {
 
 class FormatFieldParser extends AbstractParser<FormatField> {
     public parse(): FormatField {
-        const argrules = this.parseWith(ArgRulesParser);
+        const argRules = this.parseWith(ArgRulesParser);
         this.skipDelimiter();
-        const modrules = this.parseWith(ModRulesParser);
+        const morphRules = this.parseWith(ModRulesParser);
         this.checkEndBrace();
 
         return {
             type: "format",
-            value: { argrules, modrules }
+            value: { argRules, morphRules }
         };
     }
 

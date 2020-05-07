@@ -1,5 +1,5 @@
-import { ParseIter, FormatRules, ArgRules, ModRules } from "./parse";
-import ModifierFactory from "./mod";
+import { ParseIter, FormatRules, ArgRules, MorphismRules } from "./parse";
+import MorphismFactory from "./mod";
 
 interface Evaluator<T> {
     eval(): T;
@@ -17,19 +17,19 @@ class ConstFieldEvaluator implements Evaluator<string> {
 }
 
 class FormatFieldEvaluator implements Evaluator<string> {
-    public argrules: ArgRules;
-    public modrules: ModRules;
+    public argRules: ArgRules;
+    public morphRules: MorphismRules;
     public arglist: any[];
 
-    public constructor({ argrules, modrules }: FormatRules, arglist: any[]) {
-        this.argrules = argrules;
-        this.modrules = modrules;
+    public constructor({ argRules, morphRules }: FormatRules, arglist: any[]) {
+        this.argRules = argRules;
+        this.morphRules = morphRules;
         this.arglist = arglist;
     }
 
     private getArg(): any {
-        const { props } = this.argrules;
-        let { index } = this.argrules;
+        const { props } = this.argRules;
+        let { index } = this.argRules;
 
         if (typeof index === "undefined")
             if (FormatFieldEvaluator.manuallyIndexed === true)
@@ -49,7 +49,7 @@ class FormatFieldEvaluator implements Evaluator<string> {
     }
 
     private morphArg(arg: any): string {
-        const mod = ModifierFactory.getModifier(this.modrules, arg);
+        const mod = MorphismFactory.getMorphism(this.morphRules, arg);
 
         return mod.morph();
     }

@@ -23,16 +23,16 @@ describe("Align", () => {
     });
 });
 
-describe("Padchar", () => {
-    test("put the right number of padchar for >", () => {
+describe("Padfill", () => {
+    test("put the right number of padfill for >", () => {
         expect(getMorphed("{|->5}", ["right"])).toBe("-----right");
     });
 
-    test("put the right number of padchar for <", () => {
+    test("put the right number of padfill for <", () => {
         expect(getMorphed("{|-<5}", ["left"])).toBe("left-----");
     });
 
-    test("put the right number of padchar for ^", () => {
+    test("put the right number of padfill for ^", () => {
         expect(getMorphed("{|-^5}", ["middle"])).toBe("---middle--");
     });
 });

@@ -47,8 +47,8 @@ describe("Format type field", () => {
             { value: field } = iter.next();
 
         expect(field.type).toBe("format");
-        expect(field.value.argrules).toBeDefined();
-        expect(field.value.modrules).toBeDefined();
+        expect(field.value.argRules).toBeDefined();
+        expect(field.value.morphRules).toBeDefined();
         expect(iter.next().done).toBeTruthy();
     });
 
@@ -57,29 +57,29 @@ describe("Format type field", () => {
             { value: field } = iter.next();
 
         expect(field.type).toBe("format");
-        expect(field.value.argrules).toBeDefined();
-        expect(field.value.modrules).toBeDefined();
+        expect(field.value.argRules).toBeDefined();
+        expect(field.value.morphRules).toBeDefined();
         expect(iter.next().done).toBeTruthy();
     });
 
     describe("Argrules", () => {
         test("parses index", () => {
             const iter = parse("{1}"),
-                { index } = iter.next().value.value.argrules;
+                { index } = iter.next().value.value.argRules;
 
             expect(index).toBe(1);
         });
 
         test("parses index as undefined when unspecified", () => {
             const iter = parse("{.a.b|}"),
-                { index } = iter.next().value.value.argrules;
+                { index } = iter.next().value.value.argRules;
 
             expect(index).toBeUndefined();
         });
 
         test("parses props", () => {
             const iter = parse("{.a[b][c].d}"),
-                { props } = iter.next().value.value.argrules;
+                { props } = iter.next().value.value.argRules;
 
             expect(props).toHaveLength(4);
             expect(props[0]).toBe("a");
@@ -107,53 +107,53 @@ describe("Format type field", () => {
         });
     });
 
-    describe("Modrules", () => {
+    describe("morphRules", () => {
         test("parses padding", () => {
             const iter = parse("{|5}"),
-                { padding } = iter.next().value.value.modrules;
+                { padding } = iter.next().value.value.morphRules;
 
             expect(padding).toBe(5);
         });
 
-        test("parses padchar when align symbol appears", () => {
+        test("parses padfill when align rule appears", () => {
             const iter = parse("{|*>}"),
-                { padchar } = iter.next().value.value.modrules;
+                { padfill } = iter.next().value.value.morphRules;
 
-            expect(padchar).toBe("*");
+            expect(padfill).toBe("*");
         });
 
-        test("errors in parsing padchar when align symbol is none", () => {
-            // Character * is not a modifier or an argument symbol
-            // so the only purpose of it here is to be `padchar`
+        test("errors in parsing padfill when align rule is none", () => {
+            // Character * is not a modifier or an argument rule
+            // so the only purpose of it here is to be `padfill`
             expect(() => { parse("{|*}").next(); }).toThrow();
         });
 
         test("parses precision", () => {
             const iter = parse("{|.3}"),
-                { precision } = iter.next().value.value.modrules;
+                { precision } = iter.next().value.value.morphRules;
 
             expect(precision).toBe(3);
         });
 
-        test.each([">", "^", "<"])("parses align parameter '%s'", (alignParam) => {
-            const iter = parse(`{|${alignParam}}`),
-                { align } = iter.next().value.value.modrules;
+        test.each([">", "^", "<"])("parses align rule '%s'", (alignRule) => {
+            const iter = parse(`{|${alignRule}}`),
+                { align } = iter.next().value.value.morphRules;
 
-            expect(align).toBe(alignParam);
+            expect(align).toBe(alignRule);
         });
 
-        test.each(["+", "-", " "])("parses sign parameter", (signParam) => {
-            const iter = parse(`{|${signParam}}`),
-                { sign } = iter.next().value.value.modrules;
+        test.each(["+", "-", " "])("parses sign rule", (signRule) => {
+            const iter = parse(`{|${signRule}}`),
+                { sign } = iter.next().value.value.morphRules;
 
-            expect(sign).toBe(signParam);
+            expect(sign).toBe(signRule);
         });
 
-        test("parses mod", () => {
+        test("parses morphism", () => {
             const iter = parse("{|f}"),
-                { mod } = iter.next().value.value.modrules;
+                { morphism } = iter.next().value.value.morphRules;
 
-            expect(mod).toBe("f");
+            expect(morphism).toBe("f");
         });
         test("errors parsing precision when not a number follows dot", () => {
             expect(() =>{

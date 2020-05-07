@@ -24,38 +24,38 @@ import morph from "morpeu";
 
 ## Format Rules Language
 ```
-"{" [arg_index] ( "[" bracket_prop "]" | "." dot_prop )* "|" [[padchar]align] [sign] [padding] ["." precision] [mod] "}"
+"{" [arg_index] ( "[" bracket_prop "]" | "." dot_prop )* "|" [[padfill]align] [sign] [padding] ["." precision] [morphism] "}"
 ```
 Where:
 * `arg_index`: A number specifying the index of the argument in the argument list.
-* `bracket_prop`: A string of characters not including "]" to specify a property.
-* `dot_prop`: A string of a valid JavaScript identifier to specify a property.
-* `padchar`: A character to insert when padding is being added. `align` must follow immediately to recognize it. Defaults to a space.
-* `align`: Controls the alignment of the output when padding is specified.
+* `bracket_prop`: A string of characters not including "]" to specify a property of the argument.
+* `dot_prop`: A string of a valid JavaScript identifier to specify a property of the argument.
+* `padfill`: A character to insert when padding is being added. `align` must follow immediately to recognize it. Defaults to a space.
+* `align`: Controls the alignment of the output when padding is applied.
    * `>`: Right aligns the output. Default for most types.
    * `<`: Left aligns the output. Default for numbers (integers and floats).
    * `^`: Center aligns the output. If specified `padding` is odd, the extra space is applied to the left.
-* `sign`: Controls the placement of signs in numbers. Only valid for integer and float type modifiers.
+* `sign`: Controls the placement of signs in numbers. Only valid for integer and float type morphisms.
    * `+`: Prepend a plus sign before positive numbers and a minus sign before negative numbers.
    * `-`: Don't prepend anything on positive numbers but prepend a minus sign before negative numbers. The default behavior.
    * <space>: Prepend a space before positive numbers and a minus sign before negative numbers.
-* `padding`: A positive number for specifying the padding amount to be applied.
+* `padding`: A positive number for specifying the number of `padfill` characters to apply.
 * `precision`: A positive number for specifying the precision amount to be applied.
-* `mod`: See [Modifiers](#Modifiers).
+* `morphism`: See [Morphisms](#Morphisms).
 
-The delimiter pipe ("|") is similar to to the colon (:) of Python's.
+The delimiter pipe (|) is similar to to the colon (:) of Python's. Using pipe can semantically give the look of the argument (left of the pipe) being piped to the morphism.
 
-## Modifiers
-Modifiers has three types according to the argument they accept and modify.
+## Morphisms
+Morphisms have three types according to the argument they accept and morph.
 
 1. String type
 
 String types additionally support null and undefined values, and objects with `toString ` method.
 Precision indicates the number of the characters from the argument to include.
 
-| Modifier | Description |
+| Morphism | Description |
 | -------- | ----------- |
-| `s` | Modifies strings as is. The default when no modifier is specified and the argument is of string type. |
+| `s` | Morphs strings as is. The default when no morphism is specified and the argument is of string type. |
 
 #### Example Usage
 ```js
@@ -71,13 +71,13 @@ morph("Name: {.name}, Address: {.addr}", account);
 
 A specified precision results in an error.
 
-| Modifier | Description |
+| Morphism | Description |
 | -------- | ----------- |
-| `i` | Modifies argument as is. The default when no modifier is specified and the argument is of integer type. |
-| `c` | Interprets the argument as a UTF-16 code unit, and transforms it to the corresponding character. |
-| `b` | Modifies argument to binary. |
-| `o` | Modifies argument to octal. |
-| `x` | Modifies argument to hexadecimal. Outputs letters in lowercase. |
+| `i` | Morphs argument as is. The default when no morphism is specified and the argument is of integer type. |
+| `c` | Interprets the argument as a UTF-16 code unit, and morphs it to the corresponding character. |
+| `b` | Morphs argument to binary. |
+| `o` | Morphs argument to octal. |
+| `x` | Morphs argument to hexadecimal. Outputs letters in lowercase. |
 | `X` | Same as `x`, but output letters as uppercase.  |
 
 #### Example Usage
@@ -95,13 +95,13 @@ morph("Hex of 165: {|x}", 165);
 Float types support both floats and integers (which are transformed into floats).
 Precision indicates the number of decimal digits after the dot. Default precision is 6.
 
-| Modifier | Description |
+| Morphism | Description |
 | -------- | ----------- |
-| `f` | Modifies float to fixed-point form. |
-| `g` | Modifies float by a series of steps: the argument is transformed to scientific notation with precision "p" to get "exp", the exponent of the value. If `-4 <= exp < p`, format the original argument like with modifier `f` with precision "p". Else, format the argument like with modifier `e` with precision "p". In either case, the result is stripped off of insignificant trailing zeroes, and the decimal point if no digits follow it. The default when no modifier is specified and the argument is of float type. |
-| `e` | Modifies float to scientific notation using _e_ as exponent indicator. |
+| `f` | Morphs float to fixed-point form. |
+| `g` | Morphs float by a series of steps: the argument is transformed to scientific notation with precision "p" to get "exp", the exponent of the value. If `-4 <= exp < p`, format the original argument like with morphism `f` with precision "p". Else, format the argument like with morphism `e` with precision "p". In either case, the result is stripped off of insignificant trailing zeroes, and the decimal point if no digits follow it. The default when no morphism is specified and the argument is of float type. |
+| `e` | Morphs float to scientific notation using _e_ as exponent indicator. |
 | `E` | Same as `e` but use _E_ as exponent indicator. |
-| `%` | Modifies float by multiplying by 100, transforming to fixed-point form, and appending a %. |
+| `%` | Morphs float by multiplying by 100, transforming to fixed-point form, and appending a %. |
     
 #### Example Usage
 ```js
