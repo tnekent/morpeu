@@ -1,0 +1,82 @@
+{
+	"env": {
+		"es6": true,
+		"node": true
+	},
+	"globals": {
+		"Atomics": "readonly",
+		"SharedArrayBuffer": "readonly"
+	},
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"project": ["./tsconfig.json", "./tests/tsconfig.eslint.json"],
+		"warnOnUnsupportedTypeScriptVersion": false
+	},
+	"plugins": [
+		"@typescript-eslint"
+	],
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended"
+	],
+	"rules": {
+		"@typescript-eslint/no-extra-parens": "error",
+		"@typescript-eslint/prefer-for-of": "warn",
+		"@typescript-eslint/unified-signatures": "error",
+		"@typescript-eslint/unbound-method": "error",
+		"@typescript-eslint/strict-boolean-expressions": "error",
+		"@typescript-eslint/no-explicit-any": "off",
+		"@typescript-eslint/indent": [
+			"warn",
+			4
+		],
+		"prefer-const": "error",
+		"padding-line-between-statements": [
+			"warn",
+			{
+				"blankLine": "always",
+				"prev": "*",
+				"next": [
+					"class",
+					"function",
+					"return"
+				]
+			},
+			{
+				"blankLine": "always",
+				"prev": [
+					"multiline-let",
+					"multiline-const"
+				],
+				"next": "*"
+			},
+			{
+				"blankLine": "never",
+				"prev": [
+					"multiline-let",
+					"multiline-const"
+				],
+				"next": [
+					"multiline-let",
+					"multiline-const"
+				]
+			}
+		],
+		"quotes": ["error", "double"],
+		"quote-props": ["error", "as-needed"],
+		"prefer-destructuring": "warn",
+		"space-infix-ops": "warn",
+		"curly": ["warn", "multi"],
+		"class-methods-use-this": ["error", { "exceptMethods": ["checkType"] }],
+		"eqeqeq": "error",
+		"max-lines-per-function": ["warn", 25],
+		"one-var": ["warn", "consecutive"],
+		"complexity": ["error", { "max": 9 }],
+                "semi": ["error", "always"],
+		"no-unused-vars": "warn",
+                "no-trailing-spaces": "error",
+                "object-curly-spacing": ["warn", "always"]
+	},
+        "root": true
+}
