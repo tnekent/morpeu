@@ -6,6 +6,7 @@
     "scripts": {
         "test": "jest -c ./jest.config.js",
         "test:watch": "npm test -- --watch",
+	"coverage": "npm test -- --coverage",
         "build": "tsc -p ./tsconfig.json",
         "build:watch": "npm run build -- --watch",
         "lint": "eslint src/*.ts tests/*.ts",
