@@ -124,14 +124,13 @@ describe("Integer type modifiers", () => {
             getMorphed("{|b}", [3.5]);
             getMorphed("{|x}", [null]);
             getMorphed("{|o}", [String]);
-        });
+        }).toThrow();
     });
 
     describe("Mod i", () => {
         test("morphs integer", () => {
             expect(getMorphed("{|i}", [20])).toBe("20");
         });
-
     });
 
     describe("Mod b", () => {
@@ -171,7 +170,7 @@ describe("Float type modifiers", () => {
             getMorphed("{|f}", ["float"]);
             getMorphed("{|%}", [undefined]);
             getMorphed("{|g}", [Number]);
-        });
+        }).toThrow();
     });
     describe("Mod f", () => {
         test("expands float to 6th precision when unspecified", () => {
