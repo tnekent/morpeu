@@ -178,7 +178,7 @@ class ModRulesParser extends AbstractParser<MorphismRules> {
     private parsePadding(): number {
         const padding = this.matchAndUpdate(/^\d+/);
 
-        return typeof padding !== "undefined" ? parseInt(padding) : undefined;
+        return typeof padding !== "undefined" ? parseInt(padding) : 0;
     }
 
     private parsePrecision(): number {
