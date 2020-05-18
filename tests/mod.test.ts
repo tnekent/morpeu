@@ -267,3 +267,14 @@ test("evaluates arg according to type when mod is unspecified", () => {
     // Defaults to mod j
     expect(getMorphed("{}", [null])).toBe("null");
 });
+
+test("errors when an unimplemented morphism is specified", () => {
+    expect(() => getMorphed("{|z}", ["hi"])).toThrow();
+});
+
+test("errors when an arguemnt type can't be detected", () => {
+    // The only time I could see this could happen is if the object
+    // has null as its prototype.
+    const arg = Object.create(null);
+    expect(() => getMorphed("{}", [arg])).toThrow();
+});

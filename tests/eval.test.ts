@@ -75,6 +75,14 @@ describe("Argrules", () => {
 
         expect(dotprop).toEqual(bracketprop); // Both should be "abc"
     });
+
+    test("error when specified index is out of bounds from arglist", () => {
+        expect(() => { getMorphed("3: {3}", ["1", "2"]); }).toThrow();
+    });
+
+    test("error when specifying a non existing property", () => {
+        expect(() => { getMorphed("{.age}", [{ name: "Zoom" }]); }).toThrow();
+    });
 });
 
 // Modrules tested in "./mod.test.ts".

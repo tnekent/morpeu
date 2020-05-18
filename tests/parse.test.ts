@@ -62,6 +62,10 @@ describe("Format type field", () => {
         expect(iter.next().done).toBeTruthy();
     });
 
+    test("errors when delimiter is forgotten", () => {
+        expect(() => parse("{1s}").next()).toThrow();
+    });
+
     describe("Argrules", () => {
         test("parses index", () => {
             const iter = parse("{1}"),
@@ -155,6 +159,7 @@ describe("Format type field", () => {
 
             expect(morphism).toBe("f");
         });
+
         test("errors parsing precision when not a number follows dot", () => {
             expect(() =>{
                 parse("{|.f}").next();
