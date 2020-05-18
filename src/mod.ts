@@ -70,9 +70,9 @@ abstract class AbstractMorphism implements Morphism {
 }
 
 abstract class StringMorphism extends AbstractMorphism {
-    public static checkType(arg: any, mod: string): void {
+    public static checkType(arg: any, morphism: string): void {
         if (!isStringable(arg))
-            throw new Error(`Mod ${mod} only supports string types`);
+            throw new Error(`Mod ${morphism} only supports string types`);
     }
 
     public applyPrecision(): void {
@@ -82,7 +82,7 @@ abstract class StringMorphism extends AbstractMorphism {
 
     public applySign(): void {
         if (typeof this.morphRules.sign !== "undefined")
-            throw new Error("String type modifiers do not support signs");
+            throw new Error("String type morphism do not support signs");
     }
 }
 
@@ -113,21 +113,21 @@ abstract class NumericMorphism extends AbstractMorphism {
 }
 
 abstract class IntegerMorphism extends NumericMorphism {
-    public static checkType(arg: any, mod: string): void {
+    public static checkType(arg: any, morphism: string): void {
         if (!isInteger(arg))
-            throw new Error(`Mod ${mod} only supports integer types`);
+            throw new Error(`Mod ${morphism} only supports integer types`);
     }
 
     public applyPrecision(): void {
         if (typeof this.morphRules.precision !== "undefined")
-            throw new Error("Integer type modifiers do not support precision");
+            throw new Error("Integer type morphism do not support precision");
     }
 }
 
 abstract class FloatMorphism extends NumericMorphism {
-    public static checkType(arg: any, mod: string): void {
+    public static checkType(arg: any, morphism: string): void {
         if (typeof arg !== "number")
-            throw new Error(`Mod ${mod} only supports float types`);
+            throw new Error(`Mod ${morphism} only supports float types`);
     }
 
     public applyPrecision(): void {
@@ -231,54 +231,54 @@ class ModPercent extends FloatMorphism {
 export default class MorphismFactory {
     // eslint-disable-next-line complexity, max-lines-per-function
     public static getMorphism(morphRules: MorphismRules, arg: any): Morphism {
-        let modclass: StaticMorphism;
+        let morphism: StaticMorphism;
         switch (morphRules.morphism) {
             case "s":
-                modclass = ModS;
+                morphism = ModS;
                 break;
             case "i":
-                modclass = ModI;
+                morphism = ModI;
                 break;
             case "b":
-                modclass = ModB;
+                morphism = ModB;
                 break;
             case "x":
-                modclass = ModX;
+                morphism = ModX;
                 break;
             case "X":
-                modclass = ModXX;
+                morphism = ModXX;
                 break;
             case "o":
-                modclass = ModO;
+                morphism = ModO;
                 break;
             case "f":
-                modclass = ModF;
+                morphism = ModF;
                 break;
             case "g":
-                modclass = ModG;
+                morphism = ModG;
                 break;
             case "c":
-                modclass = ModC;
+                morphism = ModC;
                 break;
             case "e":
-                modclass = ModE;
+                morphism = ModE;
                 break;
             case "E":
-                modclass = ModEE;
+                morphism = ModEE;
                 break;
             case "%":
-                modclass = ModPercent;
+                morphism = ModPercent;
                 break;
             case undefined:
-                modclass = this.getDefaultMorphism(arg);
+                morphism = this.getDefaultMorphism(arg);
                 break;
             default: throw new Error(`Mod ${morphRules.morphism} is not implemented`);
         }
         // Because we already check when we run this.getDefaultMorphism(arg);
         if (typeof morphRules.morphism !== "undefined")
-            modclass.checkType(arg, morphRules.morphism);
+            morphism.checkType(arg, morphRules.morphism);
 
-        return new modclass(morphRules, arg);
+        return new morphism(morphRules, arg);
     }
 
     private static getDefaultMorphism(arg: any): StaticMorphism {

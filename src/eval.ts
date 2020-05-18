@@ -49,9 +49,9 @@ class FormatFieldEvaluator implements Evaluator {
     }
 
     private morphArg(arg: any): string {
-        const mod = MorphismFactory.getMorphism(this.morphRules, arg);
+        const morphism = MorphismFactory.getMorphism(this.morphRules, arg);
 
-        return mod.morph();
+        return morphism.morph();
     }
 
     public eval(): string {

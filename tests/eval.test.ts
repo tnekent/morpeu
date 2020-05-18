@@ -85,4 +85,4 @@ describe("Argrules", () => {
     });
 });
 
-// Modrules tested in "./mod.test.ts".
+// Morphism rules tested in "./morphism.test.ts".

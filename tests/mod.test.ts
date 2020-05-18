@@ -38,15 +38,15 @@ describe("Padfill", () => {
 });
 
 describe("Precision", () => {
-    test("truncates on string type modifiers", () => {
+    test("truncates on string type morphisms", () => {
         expect(getMorphed("{|.2s}", ["Looooong"])).toBe("Lo");
     });
 
-    test("errors on integer type modifiers", () => {
+    test("errors on integer type morphisms", () => {
         expect(() => getMorphed("{|.3i}", [145])).toThrow();
     });
 
-    describe("Float type modifiers", () => {
+    describe("Float type morphisms", () => {
         test("truncates and rounds down", () => {
             expect(getMorphed("{|.3f}", [1.025287])).toBe("1.025");
         });
@@ -58,7 +58,7 @@ describe("Precision", () => {
 });
 
 describe("Sign", () => {
-    test("errors on string type modifier", () => {
+    test("errors on string type morphism", () => {
         expect(() => getMorphed("{|+s}", ["Hello"])).toThrow();
     });
 
@@ -84,7 +84,7 @@ describe("Sign", () => {
     });
 });
 
-describe("Mod s", () => {
+describe("Morphism s", () => {
     test("morphs string", () => {
         expect(getMorphed("{|s}", ["Hello"])).toBe("Hello");
     });
@@ -117,7 +117,7 @@ describe("Mod s", () => {
     });
 });
 
-describe("Integer type modifiers", () => {
+describe("Integer type morphisms", () => {
     test("errors on non-integer arguments", () => {
         expect(() => {
             getMorphed("{|i}", ["int"]);
@@ -127,44 +127,44 @@ describe("Integer type modifiers", () => {
         }).toThrow();
     });
 
-    describe("Mod i", () => {
+    describe("Morphism i", () => {
         test("morphs integer", () => {
             expect(getMorphed("{|i}", [20])).toBe("20");
         });
     });
 
-    describe("Mod b", () => {
+    describe("Morphism b", () => {
         test("morphs integer to binary", () => {
             expect(getMorphed("{|b}", [255])).toBe("11111111");
         });
     });
 
-    describe("Mod x", () => {
+    describe("Morphism x", () => {
         test("morphs integer to hexadecimal", () => {
             expect(getMorphed("{|x}", [939])).toBe("3ab");
         });
     });
 
-    describe("Mod X", () => {
+    describe("Morphism X", () => {
         test("morphs integer to hexadecimal", () => {
             expect(getMorphed("{|X}", [939])).toBe("3AB");
         });
     });
 
-    describe("Mod o", () => {
+    describe("Morphism o", () => {
         test("morphs integer to octal", () => {
             expect(getMorphed("{|o}", [1024])).toBe("2000");
         });
     });
 
-    describe("Mod c", () => {
+    describe("Morphism c", () => {
         test("evaluates to characters", () => {
             expect(getMorphed("{|c}", [65])).toBe("A");
         });
     });
 });
 
-describe("Float type modifiers", () => {
+describe("Float type morphisms", () => {
     test("errors on non-float arguments", () => {
         expect(() => {
             getMorphed("{|f}", ["float"]);
@@ -172,7 +172,7 @@ describe("Float type modifiers", () => {
             getMorphed("{|g}", [Number]);
         }).toThrow();
     });
-    describe("Mod f", () => {
+    describe("Morphism f", () => {
         test("expands float to 6th precision when unspecified", () => {
             expect(getMorphed("{|f}", [2.7])).toBe("2.700000");
         });
@@ -183,7 +183,7 @@ describe("Float type modifiers", () => {
 
     });
 
-    describe("Mod g", () => {
+    describe("Morphism g", () => {
         test("expands float to scientific notation when exponent of num < -4", () => {
             expect(getMorphed("{|g}", [0.000001])).toBe("1e-6");
         });
@@ -212,7 +212,7 @@ describe("Float type modifiers", () => {
         });
     });
 
-    describe("Mod e", () => {
+    describe("Morphism e", () => {
         test("expands float to positive exponential form", () => {
             expect(getMorphed("{|e}", [123456789]))
                 .toBe("1.234568e+8");
@@ -229,7 +229,7 @@ describe("Float type modifiers", () => {
         });
     });
 
-    describe("Mod E", () => {
+    describe("Morphism E", () => {
         test("expands float to positive exponential form with E", () => {
             expect(getMorphed("{|E}", [123456789]))
                 .toBe("1.234568E+8");
@@ -246,7 +246,7 @@ describe("Float type modifiers", () => {
         });
     });
 
-    describe("Mod %", () => {
+    describe("Morphism %", () => {
         test("morphs float to percentage", () => {
             expect(getMorphed("{|%}", [0.05])).toBe("5.000000%");
         });
@@ -257,14 +257,14 @@ describe("Float type modifiers", () => {
     });
 });
 
-test("evaluates arg according to type when mod is unspecified", () => {
-    // Defaults to mod s
+test("evaluates arg according to type when morphism is unspecified", () => {
+    // Defaults to morphism s
     expect(getMorphed("{}", ["string"])).toBe("string");
-    // Defaults to mod i
+    // Defaults to morphism i
     expect(getMorphed("{}", [5])).toBe("5");
-    // Defaults to mod g
+    // Defaults to morphism g
     expect(getMorphed("{}", [2000000.20])).toBe("2e+6");
-    // Defaults to mod j
+    // Defaults to morphism s
     expect(getMorphed("{}", [null])).toBe("null");
 });
 

@@ -127,7 +127,7 @@ describe("Format type field", () => {
         });
 
         test("errors in parsing padfill when align rule is none", () => {
-            // Character * is not a modifier or an argument rule
+            // Character * is not a morphism or an argument rule
             // so the only purpose of it here is to be `padfill`
             expect(() => { parse("{|*}").next(); }).toThrow();
         });

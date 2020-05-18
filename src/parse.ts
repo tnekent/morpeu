@@ -195,9 +195,9 @@ class ModRulesParser extends AbstractParser<MorphismRules> {
     }
 
     private parseMod(): string {
-        const mod = this.matchAndUpdate(/^[A-Za-z%]/);
+        const morphism = this.matchAndUpdate(/^[A-Za-z%]/);
 
-        return typeof mod !== "undefined" ? mod : undefined;
+        return typeof morphism !== "undefined" ? morphism : undefined;
     }
 }
 
