@@ -1,12 +1,12 @@
 {
     "name": "morpeu",
-    "version": "0.8.1",
+    "version": "0.8.2",
     "description": "Format strings like a pro",
     "main": "dist/index.js",
     "scripts": {
         "test": "jest -c ./jest.config.js",
         "test:watch": "npm test -- --watch",
-	"coverage": "npm test -- --coverage",
+        "coverage": "npm test -- --coverage",
         "build": "tsc -p ./tsconfig.json",
         "build:watch": "npm run build -- --watch",
         "lint": "eslint src/*.ts tests/*.ts",
